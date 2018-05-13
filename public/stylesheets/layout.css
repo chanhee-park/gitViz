@@ -1,2 +1,24 @@
+.title-block {
+  width: 100%;
+  height: 65px; }
+
+.vis-comp-block-list {
+  width: 100%;
+  margin: auto;
+  height: 1015px;
+  min-height: 500px;
+  display: flex; }
+  .vis-comp-block-list .main-view {
+    height: 100%;
+    flex: 6; }
+    .vis-comp-block-list .main-view .userNetwork-view {
+      height: 100%; }
+  .vis-comp-block-list .sub-view {
+    height: 100%;
+    flex: 3; }
+    .vis-comp-block-list .sub-view .trend-view {
+      height: 60%; }
+    .vis-comp-block-list .sub-view .project-view {
+      height: 40%; }
 
 /*# sourceMappingURL=layout.css.map */

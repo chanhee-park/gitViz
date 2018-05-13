@@ -1,0 +1,10 @@
+{
+	"version": 3,
+	"file": "title.css",
+	"sources": [
+		"title.sass",
+		"_variable.sass"
+	],
+	"names": [],
+	"mappings": "AAEA,AAAA,YAAY,CAAC;EACX,WAAW,ECgBO,IAAI;EDftB,OAAO,EAAE,CAAC,CCkBM,IAAI,GDXa;EATnC,AAGE,YAHU,CAGV,WAAW,EAHb,YAAY,CAGG,WAAW,CAAC;IACvB,OAAO,EAAE,YAAY;IACrB,cAAc,EAAE,GAAG,GAAG;EAL1B,AAOE,YAPU,CAOV,WAAW,CAAC;IACV,KAAK,ECLa,OAAO;IDMzB,OAAO,EAAE,CAAC,CCWI,IAAI,GDXW"
+}

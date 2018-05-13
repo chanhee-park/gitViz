@@ -1,0 +1,11 @@
+.title-block {
+  line-height: 65px;
+  padding: 0 18px; }
+  .title-block .title-text, .title-block .title-desc {
+    display: inline-block;
+    vertical-align: top; }
+  .title-block .title-desc {
+    color: #586069;
+    padding: 0 18px; }
+
+/*# sourceMappingURL=title.css.map */

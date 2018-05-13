@@ -1,0 +1,26 @@
+@import "variable"
+
+.title-block
+  width: 100%
+  height: $title-box-height
+
+.vis-comp-block-list
+  width: 100%
+  margin: auto
+  height: $display-height - $title-box-height
+  min-height: 500px
+  display: flex
+
+  .main-view
+    height: 100%
+    flex: 6
+    .userNetwork-view
+      height: 100%
+
+  .sub-view
+    height: 100%
+    flex: 3
+    .trend-view
+      height: 60%
+    .project-view
+      height: 40%

@@ -1,7 +1,16 @@
 extends layout
 
 block content
-    .main-comp-block.userNetwork-view
-    .main-comp-block.trend-view
-    .main-comp-block.project-view
+    .vis-comp-block-list
+        .main-view
+            .userNetwork-view
+                .block-wrapper
+                    .vis-comp-block.block
+        .sub-view
+            .trend-view
+                .block-wrapper
+                    .vis-comp-block.block
+            .project-view
+                .block-wrapper
+                    .vis-comp-block.block
 
