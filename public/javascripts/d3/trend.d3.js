@@ -1,9 +1,12 @@
-const trendRoot = d3.select('#trendRenderer');
-let trendVis = {
-    width: 1100,
-    height: 990,
+const trendVis = new function () {
+    this.data = []; // public
 
-    g_userNet: trendRoot.append('g')
+    const width = 730; // private
+    const height = 580;
+    const trendRoot = d3.select('#trendRenderer');
+
+    const g_axis = trendRoot.append('g');
+    const g_stacked_area = trendRoot.append('g');
 };
 
 console.log("draw trend diagram");

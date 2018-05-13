@@ -1,9 +1,11 @@
-const userNetworkRoot = d3.select('#userNetworkRenderer');
-let userVis = {
-    width: 1100,
-    height: 990,
+const userVis = new function () {
+    this.data = []; // public
 
-    g_userNet: userNetworkRoot.append('g')
+    const width = 1100; // private
+    const height = 990;
+    const userNetworkRoot = d3.select('#userNetworkRenderer');
+
+    const g_userNet = userNetworkRoot.append('g');
 };
 
-console.log("draw user net");
+console.log("draw user network");

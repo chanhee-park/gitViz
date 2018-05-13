@@ -1,9 +1,12 @@
-const projectRoot = d3.select('#projectRenderer');
-let projectVis = {
-    width : 1100,
-    height : 990,
+const projectVis = new function () {
+    this.data = []; // public
 
-    g_userNet : projectRoot.append('g')
+    const width = 730; // private
+    const height = 380;
+    const projectRoot = d3.select('#projectRenderer');
+
+    const g_project = projectRoot.append('g');
+
 };
 
 console.log("draw project info");
