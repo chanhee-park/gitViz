@@ -1,18 +1,30 @@
 extends layout
 
 block content
+    script(src="/d3/dist/d3.min.js")
+    script(src="/d3-selection/dist/d3-selection.min.js")
+    script(src="/jquery/dist/jquery.min.js")
+    link(rel='stylesheet', href='/stylesheets/d3.renderer.css')
+
     .vis-comp-block-list
         .main-view
             .userNetwork-view
                 .block-wrapper
                     .vis-comp-block.block
+                        svg#userNetworkRenderer
         .sub-view
             .trend-view
                 .block-wrapper
                     .vis-comp-block.block
+                        svg#trendRenderer
             .project-view
                 .block-wrapper
                     .vis-comp-block.block
+                        svg#projectRenderer
+
+    script(src="/d3/userNetwork.d3.js")
+    script(src="/d3/trend.d3.js")
+    script(src="/d3/project.d3.js")
 
 
 

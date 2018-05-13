@@ -1,6 +1,9 @@
 * {
   box-sizing: border-box; }
 
+html {
+  background: #efefef; }
+
 body {
   font-family: 'Roboto', sans-serif;
   padding: 18px;
@@ -34,6 +37,7 @@ a.repo:hover {
   height: 100%; }
   .block-wrapper .block {
     height: 100%;
+    background: white;
     box-shadow: 0 2px 4px 0 rgba(50, 50, 50, 0.4);
     -webkit-box-shadow: 0 2px 4px 0 rgba(50, 50, 50, 0.4);
     -moz-box-shadow: 0 2px 4px 0 rgba(50, 50, 50, 0.4); }
