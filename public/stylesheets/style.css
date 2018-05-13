@@ -1,0 +1,24 @@
+* {
+  box-sizing: border-box;
+  border: 1px solid #ccc; }
+
+body {
+  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+  padding: 0;
+  margin: 0; }
+
+a {
+  color: #0366d6; }
+  a:visited {
+    color: #0366d6; }
+
+a.name, a.repo {
+  color: black;
+  font-weight: 600; }
+  a.name:hover, a.repo:hover {
+    color: #0366d6; }
+
+a.repo:hover {
+  border-bottom: 2px solid #0366d6; }
+
+/*# sourceMappingURL=style.css.map */

@@ -1,0 +1,26 @@
+@import "variable"
+@import "global"
+
+*
+  box-sizing: border-box
+  border: 1px solid $border-test-color
+
+body
+  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif
+  padding: 0
+  margin: 0
+
+a
+  color: $git-a-color
+  &:visited
+    color: $git-a-color
+
+a.name, a.repo
+  color: black
+  font-weight: 600
+  &:hover
+    color: $git-a-color
+
+a.repo:hover
+  border-bottom: 2px solid $git-a-color
+
