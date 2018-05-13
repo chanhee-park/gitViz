@@ -33,12 +33,5 @@ a.repo:hover
 .font-decs
   font-size: $desc-font-size
 
-
 .block-wrapper
-  padding: $padding-small
-  height: 100%
-  .block
-    height: 100%
-    box-shadow: 0 2px 4px 0 rgba(50, 50, 50, 0.4)
-    -webkit-box-shadow: 0 2px 4px 0 rgba(50, 50, 50, 0.4)
-    -moz-box-shadow: 0 2px 4px 0 rgba(50, 50, 50, 0.4)
+  @include block()

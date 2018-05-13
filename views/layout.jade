@@ -6,10 +6,15 @@ html
         link(rel='stylesheet', href='/stylesheets/style.css')
         link(rel='stylesheet', href='/stylesheets/layout.css')
         link(rel='stylesheet', href='/stylesheets/title.css')
+        <script src="https://cdn.jsdelivr.net/npm/vue"></script>
+        script(src="https://cdn.jsdelivr.net/npm/vue")
     body
-        .title
-            .block-wrapper
-                .block.title-block
-                    .title-text.font-title #{title}
-                    .title-desc.font-desc Visualize git repository and users to analyze trends in data science.
-        block content
+        #vue-components
+            .title
+                .block-wrapper
+                    .block.title-block
+                        .title-text.font-title #{title}
+                        .title-desc.font-desc Visualize git repository and users to analyze trends in data science.
+            block content
+
+    script(src='/javascripts/vue/vue_components.js')
