@@ -3,7 +3,10 @@ extends layout
 block content
     script(src="/d3/dist/d3.min.js")
     script(src="/d3-selection/dist/d3-selection.min.js")
+    script(src="/d3-selection-multi/build/d3-selection-multi.min.js")
     script(src="/jquery/dist/jquery.min.js")
+    script(src="/lodash.js")
+    link(rel='stylesheet', href='/stylesheets/layout.css')
     link(rel='stylesheet', href='/stylesheets/d3.renderer.css')
 
     .vis-comp-block-list
@@ -22,6 +25,8 @@ block content
                     .vis-comp-block.block
                         svg#projectRenderer
 
+    script(src="/util.js")
+    script(src="/Constants.js")
     script(src="/d3/userNetwork.d3.js")
     script(src="/d3/trend.d3.js")
     script(src="/d3/project.d3.js")

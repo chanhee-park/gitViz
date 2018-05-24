@@ -1,11 +1,11 @@
 const projectVis = new function () {
-    this.data = []; // public
+    this.data = [];
 
-    const width = 730; // private
+    const width = 920;
     const height = 380;
-    const projectRoot = d3.select('#projectRenderer');
 
-    const g_project = projectRoot.append('g');
+    const root = d3.select('#projectRenderer');
+    const g = root.append('g');
 
 };
 

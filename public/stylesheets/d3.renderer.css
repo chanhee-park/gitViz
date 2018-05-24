@@ -1,18 +1,18 @@
 svg {
   display: block;
   margin: auto;
-  background-color: #fef; }
+  background-color: #fff; }
 
 svg#userNetworkRenderer {
-  width: 1100px;
+  width: 920px;
   height: 990px; }
 
 svg#trendRenderer {
-  width: 730px;
+  width: 920px;
   height: 580px; }
 
 svg#projectRenderer {
-  width: 730px;
+  width: 920px;
   height: 380px; }
 
 /*# sourceMappingURL=d3.renderer.css.map */

@@ -10,12 +10,12 @@
   display: flex; }
   .vis-comp-block-list .main-view {
     height: 100%;
-    flex: 3; }
+    flex: 1; }
     .vis-comp-block-list .main-view .userNetwork-view {
       height: 100%; }
   .vis-comp-block-list .sub-view {
     height: 100%;
-    flex: 2; }
+    flex: 1; }
     .vis-comp-block-list .sub-view .trend-view {
       height: 60%; }
     .vis-comp-block-list .sub-view .project-view {
