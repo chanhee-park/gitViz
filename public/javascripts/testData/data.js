@@ -87,7 +87,17 @@ const testUserData = {
     'd18': {
         'name': "tloko",
         'star': 93002,
-        'related_keyword': { 'f1_k3': 18, 'f2_k1': 6, 'f2_k2': 18, 'f2_k3': 10, 'f3_k1': 6, 'f5_k1':12, 'f5_k2':8 }
+        'related_keyword': { 'f1_k3': 18, 'f2_k1': 6, 'f2_k2': 18, 'f2_k3': 10, 'f3_k1': 6, 'f5_k1': 12, 'f5_k2': 8 }
+    },
+    'd19': {
+        'name': "feili",
+        'star': 70921,
+        'related_keyword': { 'f2_k1': 18, 'f2_k2': 23, 'f2_k3': 27, 'f3_k2': 13, 'f4_k1':12}
+    },
+    'd20': {
+        'name': "linlen",
+        'star': 110801,
+        'related_keyword': { 'f2_k3': 11, 'f3_k1': 16, 'f3_k2': 18, 'f4_k3': 30, 'f4_k2': 12, 'f5_k1': 12, 'f5_k2': 18 }
     },
 };
 

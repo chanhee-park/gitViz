@@ -64,6 +64,7 @@ const userVis = async function () {
         this.attractions = attractions;
         this.user = user;
         this.color = '#a7f';
+        const that = this;
 
         this.totalAttractorForce = function () {
             return this.attractions.map(function (a) {
@@ -88,6 +89,60 @@ const userVis = async function () {
         };
 
         this.coordinate = { x: this.coordinateX(), y: this.coordinateY() };
+        this.render = function () {
+            let r = (that.user.star) / 10000;
+            g.append('circle').attrs({
+                cx: that.coordinate.x,
+                cy: that.coordinate.y,
+                r: r,
+                fill: that.color,
+                opacity: 0.5
+            }).on('mouseover', function () {
+                d3.select(this).attr('opacity', 1).attr('r', r * 1.1)
+            }).on('mouseout', function () {
+                d3.select(this).attr('opacity', 0.5).attr('r', r)
+            }).on("mouseover", function () {
+                addTooltip();
+            }).on("mouseout", function () {
+                d3.selectAll('.tooltip').remove();
+            });
+        };
+
+        let addTooltip = () => {
+            let r = (that.user.star) / 10000;
+            g.append('rect').attrs({
+                x: that.coordinate.x + r + 20,
+                y: that.coordinate.y - r - 20,
+                width: 150,
+                height: 200,
+                fill: GIT_DARK_COLOR,
+                'class': 'tooltip tooltip-box'
+            });
+            drawTriangle(g, that.coordinate.x + r + 20, that.coordinate.y - 2, GIT_DARK_COLOR, 'tooltip tooltip-box');
+            g.append('text')
+                .text('name : ' + that.user.name)
+                .attrs({
+                    x: that.coordinate.x + r + 30,
+                    y: that.coordinate.y - r - 10,
+                    'alignment-baseline': 'hanging',
+                    'text-anchor': 'start',
+                    fill: GIT_DARKBG_TEXT_COLOR,
+                    'font-size': FONT_SIZE_DESC,
+                    'class': 'tooltip tooltip-text'
+
+                });
+            g.append('text')
+                .text('star : ' + that.user.star)
+                .attrs({
+                    x: that.coordinate.x + r + 30,
+                    y: that.coordinate.y - r - 10 + FONT_SIZE_DESC * 2,
+                    'alignment-baseline': 'hanging',
+                    'text-anchor': 'start',
+                    fill: GIT_DARKBG_TEXT_COLOR,
+                    'font-size': FONT_SIZE_DESC,
+                    'class': 'tooltip tooltip-text'
+                });
+        }
     }
 
     // radviz 외부 원
@@ -119,18 +174,7 @@ const userVis = async function () {
 
     // radviz 내부 노드 그리기
     _.forEach(dataPoints, function (dataPoint) {
-        let r = (dataPoint.user.star) / 10000;
-        g.append('circle').attrs({
-            cx: dataPoint.coordinate.x,
-            cy: dataPoint.coordinate.y,
-            r: r,
-            fill: dataPoint.color,
-            opacity: 0.5
-        }).on('mouseover', function () {
-            d3.select(this).attr('opacity', 1).attr('r', r * 1.1)
-        }).on('mouseout', function () {
-            d3.select(this).attr('opacity', 0.5).attr('r', r)
-        })
+        dataPoint.render();
     });
 }();
 
