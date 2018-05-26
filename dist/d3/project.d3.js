@@ -7,5 +7,3 @@ const projectVis = new function () {
     const root = d3.select('#projectRenderer');
     const g = root.append('g');
 }();
-
-console.log("draw project info");

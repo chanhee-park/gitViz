@@ -19,9 +19,11 @@ const userVis = async function () {
             keys.push(keyword);
         });
     });
+    const linkData = testLinkData;
 
-    let attractors = [];
-    let dataPoints = [];
+    let attractors = [];  // keyword
+    let dataPoints = [];  // node, developer
+    let links = [];       // link
 
     function Attractor(name, theta) {
         this.name = name;
@@ -63,7 +65,7 @@ const userVis = async function () {
     function DataPoint(attractions, user) {
         this.attractions = attractions;
         this.user = user;
-        this.color = '#a7f';
+        this.color = GIT_A_COLOR;
         const that = this;
 
         this.totalAttractorForce = function () {
@@ -89,6 +91,7 @@ const userVis = async function () {
         };
 
         this.coordinate = { x: this.coordinateX(), y: this.coordinateY() };
+
         this.render = function () {
             let r = (that.user.star) / 10000;
             g.append('circle').attrs({
@@ -98,12 +101,10 @@ const userVis = async function () {
                 fill: that.color,
                 opacity: 0.5
             }).on('mouseover', function () {
-                d3.select(this).attr('opacity', 1).attr('r', r * 1.1)
-            }).on('mouseout', function () {
-                d3.select(this).attr('opacity', 0.5).attr('r', r)
-            }).on("mouseover", function () {
+                d3.select(this).attr('opacity', 1).attr('r', r * 1.1);
                 addTooltip();
-            }).on("mouseout", function () {
+            }).on('mouseout', function () {
+                d3.select(this).attr('opacity', 0.5).attr('r', r);
                 d3.selectAll('.tooltip').remove();
             });
         };
@@ -145,6 +146,38 @@ const userVis = async function () {
         }
     }
 
+
+    function Link(link) {
+        let start = { x: 0, y: 0 };
+        let end = { x: 0, y: 0 };
+        let that = this;
+        _.forEach(dataPoints, function (dataPoint) {
+            if (_.isEqual(userData[link.start], dataPoint.user)) {
+                start.x = dataPoint.coordinate.x;
+                start.y = dataPoint.coordinate.y;
+            }
+            if (_.isEqual(userData[link.end], dataPoint.user)) {
+                end.x = dataPoint.coordinate.x;
+                end.y = dataPoint.coordinate.y;
+            }
+            if (start === { x: 0, y: 0 } || end === { x: 0, y: 0 }) {
+                console.log("ERR : 노드를 찾지 못했습니다.")
+            }
+        });
+
+        this.render = () => {
+            g.append('line').attrs({
+                x1: start.x,
+                x2: end.x,
+                y1: start.y,
+                y2: end.y,
+                stroke: COLOR_LINK,
+                'stroke-weight': '1px'
+            })
+
+        };
+    }
+
     // radviz 외부 원
     g.append('circle').attrs({
         cx: RADVIZ_CENTER_X,
@@ -171,11 +204,18 @@ const userVis = async function () {
         dataPoints.push(new DataPoint(attractions, user));
     });
 
-
     // radviz 내부 노드 그리기
     _.forEach(dataPoints, function (dataPoint) {
         dataPoint.render();
     });
-}();
 
-console.log("draw user network");
+    // 노드간 링크 생성
+    _.forEach(linkData, function (link) {
+        links.push(new Link(link));
+    });
+
+    // 링크 그리기
+    _.forEach(links, function (link) {
+        link.render();
+    });
+}();

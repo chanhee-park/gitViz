@@ -2,6 +2,7 @@ const PI = Math.PI;
 
 const COLOR_TEXT_DESC = '#586069';
 const COLOR_AXIS = '#555';
+const COLOR_LINK = '#777';
 
 const GIT_A_COLOR = '#0366d6';
 const GIT_DARK_COLOR = '#25292E';

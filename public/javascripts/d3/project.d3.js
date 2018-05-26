@@ -8,5 +8,3 @@ const projectVis = new function () {
     const g = root.append('g');
 
 };
-
-console.log("draw project info");

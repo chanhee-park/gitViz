@@ -118,3 +118,58 @@ const testFieldData = {
         'keywords': ['f5_k1', 'f5_k2', 'f5_k3']
     }
 };
+
+const testLinkData = {
+    'l1': {
+        start: 'd10',
+        end: 'd11'
+    },
+    'l2': {
+        start: 'd10',
+        end: 'd20'
+    },
+    'l3': {
+        start: 'd4',
+        end: 'd6'
+    },
+    'l4': {
+        start: 'd1',
+        end: 'd2'
+    },
+    'l5': {
+        start: 'd2',
+        end: 'd3'
+    },
+    'l6': {
+        start: 'd2',
+        end: 'd18'
+    },
+    'l7': {
+        start: 'd4',
+        end: 'd18'
+    },
+    'l8': {
+        start: 'd11',
+        end: 'd18'
+    },
+    'l9': {
+        start: 'd11',
+        end: 'd20'
+    },
+    'l10': {
+        start: 'd7',
+        end: 'd9'
+    },
+    'l11': {
+        start: 'd10',
+        end: 'd12'
+    },
+    'l12': {
+        start: 'd14',
+        end: 'd16'
+    },
+    'l13': {
+        start: 'd15',
+        end: 'd16'
+    }
+};
