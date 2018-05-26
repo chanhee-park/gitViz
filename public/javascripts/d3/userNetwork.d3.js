@@ -99,8 +99,9 @@ const userVis = async function () {
                 cy: that.coordinate.y,
                 r: r,
                 fill: that.color,
-                opacity: 0.5
-            }).on('mouseover', function () {
+                opacity: 0.5,
+                'class': 'node'
+            }).on('mouseover', function (d) {
                 d3.select(this).attr('opacity', 1).attr('r', r * 1.1);
                 addTooltip();
             }).on('mouseout', function () {
@@ -172,9 +173,9 @@ const userVis = async function () {
                 y1: start.y,
                 y2: end.y,
                 stroke: COLOR_LINK,
-                'stroke-weight': '1px'
-            })
-
+                'stroke-weight': '1px',
+                'class': 'link',
+            });
         };
     }
 
@@ -203,12 +204,6 @@ const userVis = async function () {
         });
         dataPoints.push(new DataPoint(attractions, user));
     });
-
-    // radviz 내부 노드 그리기
-    _.forEach(dataPoints, function (dataPoint) {
-        dataPoint.render();
-    });
-
     // 노드간 링크 생성
     _.forEach(linkData, function (link) {
         links.push(new Link(link));
@@ -217,5 +212,10 @@ const userVis = async function () {
     // 링크 그리기
     _.forEach(links, function (link) {
         link.render();
+    });
+
+    // radviz 내부 노드 그리기
+    _.forEach(dataPoints, function (dataPoint) {
+        dataPoint.render();
     });
 }();
