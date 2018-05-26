@@ -12,7 +12,7 @@ const testUserData = {
     'd3': {
         'name': "tpope",
         'star': 60350,
-        'related_keyword': { 'f1_k1': 8, 'f1_k2': 12, 'f1_k3': 28, 'f2_k2': 3, }
+        'related_keyword': { 'f1_k1': 8, 'f1_k2': 12, 'f1_k3': 28, 'f2_k2': 3 }
     },
     'd4': {
         'name': "june",
@@ -87,24 +87,24 @@ const testUserData = {
     'd18': {
         'name': "tloko",
         'star': 93002,
-        'related_keyword': { 'f1_k3': 18, 'f2_k1': 6, 'f2_k2': 18, 'f2_k3': 10, 'f3_k1': 6, 'f5_k1':12, 'f5_k2':8 }
-    },
+        'related_keyword': { 'f1_k3': 18, 'f2_k1': 6, 'f2_k2': 18, 'f2_k3': 10, 'f3_k1': 6, 'f5_k1': 12, 'f5_k2': 8 }
+    }
 };
 
 const testFieldData = {
     'f1': {
-        'keywords': ['f1_k1', 'f1_k2', 'f1_k3'],
+        'keywords': ['f1_k1', 'f1_k2', 'f1_k3']
     },
     'f2': {
-        'keywords': ['f2_k1', 'f2_k2', 'f2_k3'],
+        'keywords': ['f2_k1', 'f2_k2', 'f2_k3']
     },
     'f3': {
-        'keywords': ['f3_k1', 'f3_k2', 'f3_k3'],
+        'keywords': ['f3_k1', 'f3_k2', 'f3_k3']
     },
     'f4': {
-        'keywords': ['f4_k1', 'f3_k2', 'f4_k3'],
+        'keywords': ['f4_k1', 'f3_k2', 'f4_k3']
     },
     'f5': {
-        'keywords': ['f5_k1', 'f5_k2', 'f5_k3'],
-    },
+        'keywords': ['f5_k1', 'f5_k2', 'f5_k3']
+    }
 };

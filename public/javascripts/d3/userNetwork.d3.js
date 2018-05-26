@@ -10,8 +10,15 @@ const userVis = async function () {
     const root = d3.select('#userNetworkRenderer');
     const g = root.append('g');
 
-    const userData = await Util.loadNumberCsvByD3('../data/testRadviz.csv');
-    const keys = Object.keys(userData[0]);
+    // const userData = await Util.loadNumberCsvByD3('../data/testRadviz.csv');
+    // const keys = Object.keys(userData[0]);
+    const userData = testUserData;
+    let keys = [];
+    _.forEach(testFieldData, function (val, key) {
+        _.forEach(val.keywords, function (keyword) {
+            keys.push(keyword);
+        });
+    });
 
     let attractors = [];
     let dataPoints = [];
@@ -53,10 +60,10 @@ const userVis = async function () {
         }
     }
 
-    function DataPoint(attractions, species, color) {
+    function DataPoint(attractions, user) {
         this.attractions = attractions;
-        this.species = species;
-        this.color = color;
+        this.user = user;
+        this.color = '#a7f';
 
         this.totalAttractorForce = function () {
             return this.attractions.map(function (a) {
@@ -102,23 +109,27 @@ const userVis = async function () {
     _.forEach(userData, function (user) {
         let attractions = [];
         _.forEach(keys, function (key, i) {
-            attractions.push({ attractor: attractors[i], force: user[attractors[i].name] })
+            let force = _.isUndefined(user['related_keyword'][key]) ? 0 : user['related_keyword'][key];
+            attractions.push({ attractor: attractors[i], force: force });
+
         });
-        dataPoints.push(new DataPoint(attractions, 'developer', '#c5c'));
+        dataPoints.push(new DataPoint(attractions, user));
     });
+
 
     // radviz 내부 노드 그리기
     _.forEach(dataPoints, function (dataPoint) {
+        let r = (dataPoint.user.star) / 10000;
         g.append('circle').attrs({
             cx: dataPoint.coordinate.x,
             cy: dataPoint.coordinate.y,
-            r: 5,
+            r: r,
             fill: dataPoint.color,
             opacity: 0.5
         }).on('mouseover', function () {
-            d3.select(this).attr('opacity', 1).attr('r', 8)
+            d3.select(this).attr('opacity', 1).attr('r', r * 1.1)
         }).on('mouseout', function () {
-            d3.select(this).attr('opacity', 0.5).attr('r', 5)
+            d3.select(this).attr('opacity', 0.5).attr('r', r)
         })
     });
 }();
