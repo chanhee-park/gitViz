@@ -1,3 +1,21 @@
+const testFieldData = {
+    'f1': {
+        'keywords': ['f1_k1', 'f1_k2', 'f1_k3']
+    },
+    'f2': {
+        'keywords': ['f2_k1', 'f2_k2', 'f2_k3']
+    },
+    'f3': {
+        'keywords': ['f3_k1', 'f3_k2', 'f3_k3']
+    },
+    'f4': {
+        'keywords': ['f4_k1', 'f4_k2', 'f4_k3']
+    },
+    'f5': {
+        'keywords': ['f5_k1', 'f5_k2', 'f5_k3']
+    }
+};
+
 const testUserData = {
     'd1': {
         'name': "tj",
@@ -101,24 +119,6 @@ const testUserData = {
     }
 };
 
-const testFieldData = {
-    'f1': {
-        'keywords': ['f1_k1', 'f1_k2', 'f1_k3']
-    },
-    'f2': {
-        'keywords': ['f2_k1', 'f2_k2', 'f2_k3']
-    },
-    'f3': {
-        'keywords': ['f3_k1', 'f3_k2', 'f3_k3']
-    },
-    'f4': {
-        'keywords': ['f4_k1', 'f3_k2', 'f4_k3']
-    },
-    'f5': {
-        'keywords': ['f5_k1', 'f5_k2', 'f5_k3']
-    }
-};
-
 const testLinkData = {
     'l1': {
         start: 'd10',
@@ -173,3 +173,5 @@ const testLinkData = {
         end: 'd16'
     }
 };
+
+const testProjectData = {};

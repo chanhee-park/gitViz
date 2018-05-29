@@ -12,11 +12,14 @@ const userVis = async function () {
 
     // const userData = await Util.loadNumberCsvByD3('../data/testRadviz.csv');
     // const keys = Object.keys(userData[0]);
+
     const userData = testUserData;
     let keys = [];
-    _.forEach(testFieldData, function (val, key) {
-        _.forEach(val.keywords, function (keyword) {
+    let keyField = {};
+    _.forEach(testFieldData, function (field, fieldName) {
+        _.forEach(field.keywords, function (keyword) {
             keys.push(keyword);
+            keyField[keyword] = fieldName;
         });
     });
     const linkData = testLinkData;
@@ -27,6 +30,7 @@ const userVis = async function () {
 
     function Attractor(name, theta) {
         this.name = name;
+        this.field = keyField[name];
         this.x = RADVIZ_CENTER_X + Math.cos(theta) * RADVIZ_RADIUS;
         this.y = RADVIZ_CENTER_Y + Math.sin(theta) * RADVIZ_RADIUS;
         this.theta = theta;
@@ -44,10 +48,11 @@ const userVis = async function () {
                 y: 0,
                 'alignment-baseline': 'central',
                 'text-anchor': anchor,
-                'fill': COLOR_TEXT_DESC,
+                'fill': colors[this.field],
                 'font-size': FONT_SIZE_AXIS,
                 'transform': 'translate(' + textX + ',' + textY + ') rotate(' + (Util.radians_to_degrees(theta) - half) + ')'
             });
+            console.log(this.field, colors[this.field]);
 
             g.append('line').attrs({
                 x1: -5,
@@ -73,6 +78,23 @@ const userVis = async function () {
                 return a + b;
             });
         };
+
+        this.getFieldScores = function () {
+            // console.log(user.related_keyword);
+            let scores = [];
+            let i = 0;
+            _.forEach(testFieldData, function (field) {
+                scores[i] = 0;
+                _.forEach(field.keywords, function (keyword) {
+                    if (_.isNumber(that.user.related_keyword[keyword])) {
+                        scores[i] += that.user.related_keyword[keyword];
+                    }
+                });
+                i++;
+            });
+            return scores;
+        };
+
         this.coordinateX = function () {
             return this.attractions.map(function (a) {
                 return a.force * a.attractor.x;
@@ -80,6 +102,7 @@ const userVis = async function () {
                 return a + b;
             }) / this.totalAttractorForce();
         };
+
         this.coordinateY = function () {
             return this.attractions.map(function (a) {
                 return a.force * a.attractor.y;
@@ -92,18 +115,21 @@ const userVis = async function () {
 
         this.render = function () {
             let r = that.user.star / 10000;
+
+            let pieData = that.getFieldScores();
+            drawPie(g, that.user.id, pieData, that.coordinate.x, that.coordinate.y, r, "node");
+
+            // mouse event zone
             g.append('circle').attrs({
                 cx: that.coordinate.x,
                 cy: that.coordinate.y,
                 r: r,
-                fill: that.color,
-                opacity: 0.5,
+                fill: '#fff',
+                opacity: 0,
                 'class': 'node'
-            }).on('mouseover', function (d) {
-                d3.select(this).attr('opacity', 1).attr('r', r * 1.1);
+            }).on('mouseover', function () {
                 addTooltip();
             }).on('mouseout', function () {
-                d3.select(this).attr('opacity', 0.5).attr('r', r);
                 d3.selectAll('.tooltip').remove();
             });
         };
@@ -144,7 +170,8 @@ const userVis = async function () {
     function Link(link) {
         let start = { x: 0, y: 0 };
         let end = { x: 0, y: 0 };
-        let that = this;
+        // let that = this;
+
         _.forEach(dataPoints, function (dataPoint) {
             if (_.isEqual(userData[link.start], dataPoint.user)) {
                 start.x = dataPoint.coordinate.x;
