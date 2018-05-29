@@ -56,3 +56,6 @@ fabric.properties
 
 # Mac OS X
 .DS_Store
+
+# Node Module
+.node_modules
