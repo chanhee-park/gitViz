@@ -17,7 +17,7 @@
     "lodash": "^4.17.10",
     "morgan": "~1.9.0",
     "node-sass-middleware": "0.11.0",
-    "npm": "^6.0.1",
+    "npm": "^6.1.0",
     "vue": "^2.5.16"
   },
   "devDependencies": {

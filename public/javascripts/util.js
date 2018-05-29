@@ -26,5 +26,25 @@ const Util = new function () {
 
     this.radians_to_degrees = (radians) => {
         return radians * (180 / PI);
-    }
+    };
+
+    this.max_attr_of_objs = (objs, attr) => {
+        let max = -1000000;
+        for (let i = 0; i < objs.length; i++) {
+            if (max < objs[i][attr]) {
+                max = objs[i][attr]
+            }
+        }
+        return max;
+    };
+
+    this.min_attr_of_objs = (objs, attr) => {
+        let min = 1000000000000;
+        for (let i = 0; i < objs.length; i++) {
+            if (min > objs[i][attr]) {
+                min = objs[i][attr]
+            }
+        }
+        return min;
+    };
 };

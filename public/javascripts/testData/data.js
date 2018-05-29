@@ -1,4 +1,4 @@
-const testFieldData = {
+const TEST_FIELD_DATA = {
     'f1': {
         'keywords': ['f1_k1', 'f1_k2', 'f1_k3'],
     },
@@ -16,7 +16,7 @@ const testFieldData = {
     },
 };
 
-const testUserData = {
+const TEST_USER_DATA = {
     'd1': {
         'name': "tj",
         'star': 48057,
@@ -119,7 +119,7 @@ const testUserData = {
     },
 };
 
-const testLinkData = {
+const TEST_LINK_DATA = {
     'l1': {
         start: 'd10',
         end: 'd11'
@@ -174,4 +174,62 @@ const testLinkData = {
     }
 };
 
-const testProjectData = {};
+const TEST_PROJECT_DATA = {
+    'p1': {
+        name: 'project 01',
+        field: 'f1',
+        each_commit_counts_by_time: [10, 7, 8, 2, 5, 1, 0, 0, 2, 1, 1]
+    },
+    'p2': {
+        name: 'project 02',
+        field: 'f1',
+        each_commit_counts_by_time: [0, 0, 10, 8, 3, 6, 3, 2, 5, 3, 0]
+    },
+    'p3': {
+        name: 'project 03',
+        field: 'f1',
+        each_commit_counts_by_time: [0, 0, 0, 3, 10, 9, 8, 2, 7, 6, 5]
+    },
+    'p4': {
+        name: 'project 04',
+        field: 'f2',
+        each_commit_counts_by_time: [0, 0, 0, 0, 5, 9, 8, 3, 6, 3, 5]
+    },
+    'p5': {
+        name: 'project 05',
+        field: 'f4',
+        each_commit_counts_by_time: [0, 0, 0, 0, 1, 3, 2, 4, 5, 3, 4]
+    },
+    'p6': {
+        name: 'project 06',
+        field: 'f5',
+        each_commit_counts_by_time: [0, 0, 0, 0, 2, 1, 1, 3, 3, 1, 3]
+    }
+};
+
+// #project_id# : {
+//     project_name : #project_name#,
+//     field : #field_name#,
+//     star : #number_of_stars#,
+//     created_time : #YYYY-MM-DD#,
+//     last_commit : #YYYY-MM-DD#,
+//     keywords : [#related_keywords#],
+//     lang : [#languages#],
+//     lib : [#libs_or_packages#],
+//     developers : [
+// 			#developer_id# : {
+//         developer_name : #developer_name#
+// 				first_time_to_participate : #YYYY-MM-DD#,
+//         last_commit : #YYYY-MM-DD#,
+//         contributions : #A_degree_of_contribution#
+//     },
+// #developer_id# : {
+//     ...
+//     },
+// ...
+// ],
+//     readme : {
+//         readme : #readme#
+//     }
+// },
+

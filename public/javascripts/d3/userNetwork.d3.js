@@ -1,5 +1,6 @@
 const userVis = async function () {
-    this.data = [];
+    const root = d3.select('#userNetworkRenderer');
+    const g = root.append('g');
 
     const WIDTH = 920;
     const HEIGHT = 990;
@@ -7,26 +8,21 @@ const userVis = async function () {
     const RADVIZ_CENTER_X = WIDTH / 2;
     const RADVIZ_CENTER_Y = 400;
 
-    const root = d3.select('#userNetworkRenderer');
-    const g = root.append('g');
-
-    // const userData = await Util.loadNumberCsvByD3('../data/testRadviz.csv');
-    // const keys = Object.keys(userData[0]);
-
-    const userData = testUserData;
+    const userData = TEST_USER_DATA;
+    const linkData = TEST_LINK_DATA;
     let keys = [];
     let keyField = {};
-    _.forEach(testFieldData, function (field, fieldName) {
+
+    let attractors = [];  // keyword
+    let dataPoints = [];  // node, developer
+    let links = [];       // link
+
+    _.forEach(TEST_FIELD_DATA, function (field, fieldName) {
         _.forEach(field.keywords, function (keyword) {
             keys.push(keyword);
             keyField[keyword] = fieldName;
         });
     });
-    const linkData = testLinkData;
-
-    let attractors = [];  // keyword
-    let dataPoints = [];  // node, developer
-    let links = [];       // link
 
     function Attractor(name, theta) {
         this.name = name;
@@ -50,11 +46,10 @@ const userVis = async function () {
                     y: 0,
                     'alignment-baseline': 'central',
                     'text-anchor': anchor,
-                    'fill': colors[this.field],
+                    'fill': FIELD_COLORS[this.field],
                     'font-size': FONT_SIZE_AXIS,
                     'transform': 'translate(' + textX + ',' + textY + ') rotate(' + (Util.radians_to_degrees(theta) - half) + ')'
                 });
-            console.log(this.field, colors[this.field]);
 
             g.append('line').attrs({
                 x1: -5,
@@ -85,7 +80,7 @@ const userVis = async function () {
             // console.log(user.related_keyword);
             let scores = [];
             let i = 0;
-            _.forEach(testFieldData, function (field) {
+            _.forEach(TEST_FIELD_DATA, function (field) {
                 scores[i] = 0;
                 _.forEach(field.keywords, function (keyword) {
                     if (_.isNumber(that.user.related_keyword[keyword])) {
@@ -119,7 +114,7 @@ const userVis = async function () {
             let r = (that.user.star) / 10000;
 
             let pieData = that.getFieldScores();
-            drawPie(g, that.user.id, pieData, that.coordinate.x, that.coordinate.y, r, "node");
+            d3Util.drawPie(g, that.user.id, pieData, that.coordinate.x, that.coordinate.y, r, "node");
 
             // mouse event zone
             g.append('circle').attrs({
@@ -147,7 +142,7 @@ const userVis = async function () {
                 fill: GIT_DARK_COLOR,
                 'class': 'tooltip tooltip-box'
             });
-            drawTriangle(g, that.coordinate.x + r + 20, that.coordinate.y - 2, GIT_DARK_COLOR, 'tooltip tooltip-box');
+            d3Util.drawTriangle(g, that.coordinate.x + r + 20, that.coordinate.y - 2, GIT_DARK_COLOR, 'tooltip tooltip-box');
             g.append('text')
                 .text('name : ' + that.user.name)
                 .attrs({
