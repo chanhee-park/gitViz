@@ -1,4 +1,4 @@
-const userVis = async function () {
+async function userVis(param) {
     const root = d3.select('#userNetworkRenderer');
     const g = root.append('g');
 
@@ -8,8 +8,8 @@ const userVis = async function () {
     const RADVIZ_CENTER_X = WIDTH / 2;
     const RADVIZ_CENTER_Y = 400;
 
-    const userData = TEST_USER_DATA;
-    const linkData = TEST_LINK_DATA;
+    const userData = param.users;
+    const linkData = param.links;
     let keys = [];
     let keyField = {};
 
@@ -17,7 +17,7 @@ const userVis = async function () {
     let dataPoints = [];  // node, developer
     let links = [];       // link
 
-    _.forEach(TEST_FIELD_DATA, function (field, fieldName) {
+    _.forEach(param.fields, function (field, fieldName) {
         _.forEach(field.keywords, function (keyword) {
             keys.push(keyword);
             keyField[keyword] = fieldName;
@@ -77,10 +77,9 @@ const userVis = async function () {
         };
 
         this.getFieldScores = function () {
-            // console.log(user.related_keyword);
             let scores = [];
             let i = 0;
-            _.forEach(TEST_FIELD_DATA, function (field) {
+            _.forEach(param.fields, function (field) {
                 scores[i] = 0;
                 _.forEach(field.keywords, function (keyword) {
                     if (_.isNumber(that.user.related_keyword[keyword])) {
@@ -241,5 +240,6 @@ const userVis = async function () {
     _.forEach(dataPoints, function (dataPoint) {
         dataPoint.render();
     });
-}();
+}
 
+userVis({ users: TEST_USER_DATA, links: TEST_LINK_DATA, fields: TEST_FIELD_DATA });
