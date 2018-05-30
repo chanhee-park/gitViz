@@ -177,58 +177,49 @@ const TEST_LINK_DATA = {
 const TEST_PROJECT_DATA = {
     'p1': {
         name: 'project 01',
+        star: 14993,
         field: 'f1',
         each_commit_counts_by_time: [10, 7, 8, 2, 5, 1, 0, 0, 2, 1, 1]
     },
+    'p7': {
+        name: 'project 07',
+        star: 14993,
+        field: 'f5',
+        each_commit_counts_by_time: [3, 2, 0, 0, 0, 1, 2, 0, 0, 0, 0]
+    },
     'p2': {
         name: 'project 02',
+        star: 14993,
         field: 'f1',
-        each_commit_counts_by_time: [0, 0, 10, 8, 3, 6, 3, 2, 5, 3, 0]
+        each_commit_counts_by_time: [0, 0, 10, 8, 3, 6, 3, 6, 5, 3, 0]
     },
     'p3': {
         name: 'project 03',
+        star: 14993,
         field: 'f1',
-        each_commit_counts_by_time: [0, 0, 0, 3, 10, 9, 8, 2, 7, 6, 5]
+        each_commit_counts_by_time: [0, 0, 0, 3, 10, 9, 8, 8, 2, 6, 5]
     },
     'p4': {
         name: 'project 04',
+        star: 14993,
         field: 'f2',
-        each_commit_counts_by_time: [0, 0, 0, 0, 5, 9, 8, 3, 6, 3, 5]
+        each_commit_counts_by_time: [0, 0, 0, 0, 5, 9, 8, 3, 6, 6, 5]
     },
     'p5': {
         name: 'project 05',
+        star: 14993,
         field: 'f4',
         each_commit_counts_by_time: [0, 0, 0, 0, 1, 3, 2, 4, 5, 3, 4]
     },
     'p6': {
         name: 'project 06',
+        star: 14993,
         field: 'f5',
-        each_commit_counts_by_time: [0, 0, 0, 0, 2, 1, 1, 3, 3, 1, 3]
+        each_commit_counts_by_time: [0, 0, 0, 0, 0, 3, 2, 0, 3, 5, 6]
     }
+    // 'p7': {
+    //     name: 'project 07',
+    //     field: 'f5',
+    //     each_commit_counts_by_time: [3, 2, 0, 0, 0, 1, 2, 0, 0, 0, 0]
+    // }
 };
-
-// #project_id# : {
-//     project_name : #project_name#,
-//     field : #field_name#,
-//     star : #number_of_stars#,
-//     created_time : #YYYY-MM-DD#,
-//     last_commit : #YYYY-MM-DD#,
-//     keywords : [#related_keywords#],
-//     lang : [#languages#],
-//     lib : [#libs_or_packages#],
-//     developers : [
-// 			#developer_id# : {
-//         developer_name : #developer_name#
-// 				first_time_to_participate : #YYYY-MM-DD#,
-//         last_commit : #YYYY-MM-DD#,
-//         contributions : #A_degree_of_contribution#
-//     },
-// #developer_id# : {
-//     ...
-//     },
-// ...
-// ],
-//     readme : {
-//         readme : #readme#
-//     }
-// },

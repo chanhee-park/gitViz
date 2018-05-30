@@ -77,13 +77,16 @@ const trendVis = new function () {
         // stacked Area Chart
         _.forEach(this.projectsData, function (project) {
             let lineData = [];
-            let committed = true;
+            let untilCommitted = true;
+            let firstCommit = 0;
 
             _.forEach(project.each_commit_counts_by_time, function (counts, time) {
-                if (committed) {
-                    lineData.push(getCoord({ x: time, y: stackedCommitCount[time] }));
+                if (untilCommitted) {
+                    // lineData.push(getCoord({ x: time, y: stackedCommitCount[time] }));
                     if (counts > 0) {
-                        committed = false;
+                        untilCommitted = false;
+                        lineData.push(getCoord({ x: time, y: stackedCommitCount[time] }));
+                        firstCommit = time;
                     }
                 }
                 lineData.push(getCoord({ x: time, y: counts + stackedCommitCount[time] }));
@@ -100,10 +103,54 @@ const trendVis = new function () {
                 .attr("d", d3Util.line(lineData))
                 .attrs({
                     fill: FIELD_COLORS[project.field],
-                    stroke: COLOR_AXIS,
+                    stroke: '#FFF',
+                    opacity: 0.8,
                     'stroke-width': 2,
+                })
+                .on('mouseover', function () {
+                    d3.select(this).attr('opacity', 1);
+                    addTooltip(d3.mouse(this)[0], d3.mouse(this)[1], project);
+                })
+                .on('mouseout', function () {
+                    d3.select(this).attr('opacity', 0.8);
+                    d3.selectAll('.tooltip').remove();
                 });
         })
+    };
+
+    let addTooltip = (x, y, project) => {
+        g.append('rect').attrs({
+            x: x + 40,
+            y: y - 30,
+            width: 250,
+            height: 200,
+            fill: GIT_DARK_COLOR,
+            'class': 'tooltip tooltip-box'
+        });
+        d3Util.drawTriangle(g, x+40, y, GIT_DARK_COLOR, 'tooltip tooltip-box');
+        g.append('text')
+            .text('name : ' + project.name)
+            .attrs({
+                x: x + 50,
+                y: y - 15,
+                'alignment-baseline': 'hanging',
+                'text-anchor': 'start',
+                fill: GIT_DARKBG_TEXT_COLOR,
+                'font-size': FONT_SIZE_DESC,
+                'class': 'tooltip tooltip-text'
+
+            });
+        g.append('text')
+            .text('star : ' + project.star)
+            .attrs({
+                x: x + 50,
+                y: y - 15 + FONT_SIZE_DESC * 2,
+                'alignment-baseline': 'hanging',
+                'text-anchor': 'start',
+                fill: GIT_DARKBG_TEXT_COLOR,
+                'font-size': FONT_SIZE_DESC,
+                'class': 'tooltip tooltip-text'
+            });
     };
 
     this.render();
