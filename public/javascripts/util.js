@@ -16,8 +16,11 @@ const Util = new function () {
 
     this.extract = (objs, key, value) => {
         let extracted = [];
-        objs.map(function (obj) {
-            if (obj.hasOwnProperty(key) && obj[key] === value) {
+        console.log(key);
+        console.log(value);
+        _.forEach(objs, function (obj, obj_key) {
+            console.log(obj[key]);
+            if (obj[key] === value || obj[key].indexOf(value) >= 0) {
                 extracted.push(obj);
             }
         });

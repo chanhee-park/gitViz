@@ -125,6 +125,15 @@ async function userVis(param) {
                 addTooltip();
             }).on('mouseout', function () {
                 d3.selectAll('.tooltip').remove();
+            }).on('click', function () {
+                console.log(that.user.id);
+                d3.select('#trendRenderer > *').remove();
+                trendVis({
+                    conditionInfo: {
+                        descText: 'IS USER ' + user.name + '?',
+                        conditions: [{ key: 'userID', val: user.id }]
+                    }
+                });
             });
         };
 

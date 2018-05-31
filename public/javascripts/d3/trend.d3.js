@@ -1,4 +1,4 @@
-const trendVis = new function () {
+function trendVis(prams) {
     const root = d3.select('#trendRenderer');
     const g = root.append('g');
 
@@ -6,13 +6,16 @@ const trendVis = new function () {
     const HEIGHT = 580;
     const PADDING_LEFT = 60;
     const PADDING_RIGHT = 30;
-    const PADDING_TOP = 20;
+    const PADDING_TOP = 50;
     const PADDING_BOTTOM = 20;
 
     const GRAPH_WIDTH = WIDTH - PADDING_LEFT - PADDING_RIGHT;
     const GRAPH_HEIGHT = HEIGHT - PADDING_BOTTOM - PADDING_TOP;
 
     this.projectsData = TEST_PROJECT_DATA;
+
+    this.conditionText = prams.conditionInfo.descText;
+    const that = this;
 
     // 가로축
     g.append('line')
@@ -45,6 +48,17 @@ const trendVis = new function () {
             }
         };
 
+        let condition = that.conditionText;
+        g.append('text')
+            .text('A change in the trend of a project filtered by the condition  "' + condition + '" .')
+            .attrs({
+                x: PADDING_LEFT,
+                y: 15,
+                'alignment-baseline': 'hanging',
+                'text-anchor': 'start',
+                'fill': COLOR_TEXT_DESC,
+                'font-size': FONT_SIZE_DESC,
+            });
         // 가로축 척도
         for (let time = 0; time < time_len; time++) {
             g.append('text')
@@ -127,7 +141,7 @@ const trendVis = new function () {
             fill: GIT_DARK_COLOR,
             'class': 'tooltip tooltip-box'
         });
-        d3Util.drawTriangle(g, x+40, y, GIT_DARK_COLOR, 'tooltip tooltip-box');
+        d3Util.drawTriangle(g, x + 40, y, GIT_DARK_COLOR, 'tooltip tooltip-box');
         g.append('text')
             .text('name : ' + project.name)
             .attrs({
@@ -153,5 +167,21 @@ const trendVis = new function () {
             });
     };
 
-    this.render();
-}();
+    this.setProjectData = (conditionInfo) => {
+        // conditionInfo.descText
+        // conditionInfo.conditions[0].key
+        // conditionInfo.conditions[0].val
+        if (conditionInfo.conditions.length < 1) return TEST_PROJECT_DATA;
+        let extractedProject = {};
+        _.forEach(conditionInfo.conditions, function (condition) {
+            console.log(condition.key, condition.val);
+            extractedProject = _.union(extractedProject, Util.extract(TEST_PROJECT_DATA, condition.key, condition.val));
+        });
+        return extractedProject;
+    };
+
+    this.projectsData = this.setProjectData(prams.conditionInfo);
+    this.render({ project: this.projectsData });
+}
+
+trendVis({ conditionInfo: { descText: 'ALL PROJECT', conditions: [] } });
