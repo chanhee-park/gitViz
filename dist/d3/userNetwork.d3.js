@@ -181,6 +181,7 @@ async function userVis(param) {
     function Link(link) {
         let start = { x: 0, y: 0 };
         let end = { x: 0, y: 0 };
+        let projects = link.projects;
         // let that = this;
 
         _.forEach(dataPoints, function (dataPoint) {
@@ -207,7 +208,8 @@ async function userVis(param) {
                 y1: start.y,
                 y2: end.y,
                 stroke: COLOR_LINK,
-                'stroke-weight': '1px',
+                'stroke-weight': projects.length * 2 + 'px',
+                opacity: projects.length * 0.5,
                 'class': 'link'
             });
         };
@@ -240,13 +242,13 @@ async function userVis(param) {
     // 노드간 링크 생성
     _.forEach(linkData, function (link) {
         // if(link.projects.length>1){
-            links.push(new Link(link));
+        links.push(new Link(link));
         // }
     });
 
     // 링크 그리기
     _.forEach(links, function (link) {
-        // link.render();
+        link.render();
     });
 
     // radviz 내부 노드 그리기
