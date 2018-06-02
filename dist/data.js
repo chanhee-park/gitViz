@@ -196,21 +196,27 @@ const TEST_LINK_DATA = {
 
 const Data = new function () {
     let FIELDS = {};
+    let USERS = {};
     let LINKS = {};
     let REPOSITORIES = {};
 
-    $.getJSON('../data/fields.json', function (data) {
+    $.getJSON('../data/fields_final.json', function (data) {
         FIELDS = data;
         console.log(FIELDS);
     });
+    $.getJSON('../data/users_final.json', function (data) {
+        USERS = data;
+        console.log(USERS);
+    });
 
-    $.getJSON('../data/links(onlyOwner).json', function (data) {
+    $.getJSON('../data/links_final.json', function (data) {
         LINKS = data;
         console.log(LINKS);
     });
 
-    $.getJSON('../data/repos.min.json', function (data) {
+    $.getJSON('../data/repos_final.min.json', function (data) {
         REPOSITORIES = data;
+        console.log(REPOSITORIES);
         trendVis({ data: REPOSITORIES, conditionInfo: { descText: 'ALL PROJECT', conditions: [] } });
     });
 }();

@@ -38,13 +38,21 @@ _.forEach(repos, function (rep) {
             if (keyword.length < 4) keyword = ' ' + keyword + ' ';
             if (rep.name.toUpperCase().includes(keyword.toUpperCase())) {
                 rep['keywords'].push(keyword.replace(/\s/g, ''));
+                rep['keywords'].push(keyword.replace(/\s/g, ''));
+                rep['keywords'].push(keyword.replace(/\s/g, ''));
+                rep['keywords'].push(keyword.replace(/\s/g, ''));
+                rep['keywords'].push(keyword.replace(/\s/g, ''));
             }
             if (rep.disc !== undefined && rep.disc.toUpperCase().includes(keyword.toUpperCase())) {
+                rep['keywords'].push(keyword.replace(/\s/g, ''));
                 rep['keywords'].push(keyword.replace(/\s/g, ''));
             }
             if (rep.tags !== undefined) {
                 _.forEach(rep.tags, function (tag) {
                     if (tag.toLocaleUpperCase().includes(keyword.replace(/\s/g, '').toLocaleUpperCase())) {
+                        // 키워드는 확실한 정보이므로 3배 가중치 적용
+                        rep['keywords'].push(keyword.replace(/\s/g, ''));
+                        rep['keywords'].push(keyword.replace(/\s/g, ''));
                         rep['keywords'].push(keyword.replace(/\s/g, ''));
                     }
                 });
@@ -54,7 +62,9 @@ _.forEach(repos, function (rep) {
             }
         });
     });
-    _.uniq(rep['keywords']);
+
+    // 한 프로젝트 내 키워드 중복 등장 제거 (안하면 --> 가중치 적용)
+    // _.uniq(rep['keywords']);
     if (rep.keywords.length <= 1) {
         delete repos[rep.id];
     }
@@ -67,6 +77,5 @@ fs.writeFileSync('./repos.json', JSON.stringify(repos, null, 4));
 // console.log(cnt, '개 중');                         // 944 전체
 // console.log(zero, '개가 0개의 태그를 가지고 있습니다.');  // 12  0 category
 // console.log(one, '개가 1개의 태그를 가지고 있습니다.');   // 9   1 category
-
 
 // git, fork
