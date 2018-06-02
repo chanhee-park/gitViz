@@ -96,12 +96,13 @@ function trendVis(prams) {
                 })
         }
         g.append('text')
-            .text("Number of projects created\n")
+            .text("Number of projects created in that year")
             .attrs({
                 x: PADDING_LEFT - 25,
                 y: PADDING_TOP - 10,
                 'alignment-baseline': 'ideographic',
                 'text-anchor': 'start',
+                'font-style': 'italic',
                 'fill': COLOR_TEXT_DESC,
                 'font-size': FONT_SIZE_AXIS,
             });
@@ -112,7 +113,7 @@ function trendVis(prams) {
         let lineData = [];
         _.forEach(projectCount, function (counts, time) {
             time = time - _.min(_.keys(projectCount));
-            console.log('year', time+ time_start, '-> ', counts, 'project');
+            console.log('year', time + time_start, '-> ', counts, 'project');
             if (time === 0) {
                 lineData.push(getCoord({ x: 0, y: 0 }));
                 lineData.push(getCoord({ x: 0, y: counts }));

@@ -79,11 +79,12 @@ function trendVis(prams) {
                 'font-size': FONT_SIZE_AXIS
             });
         }
-        g.append('text').text("Number of projects created\n").attrs({
+        g.append('text').text("Number of projects created in that year").attrs({
             x: PADDING_LEFT - 25,
             y: PADDING_TOP - 10,
             'alignment-baseline': 'ideographic',
             'text-anchor': 'start',
+            'font-style': 'italic',
             'fill': COLOR_TEXT_DESC,
             'font-size': FONT_SIZE_AXIS
         });

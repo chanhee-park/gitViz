@@ -28,6 +28,8 @@ _.forEach(fields, function (field) {
     _.uniq(field.keywords);
 });
 // console.log(fields);
+fs.writeFileSync('./fields.json', JSON.stringify(fields, null, 4));
+
 
 _.forEach(repos, function (rep) {
     rep['keywords'] = [];
