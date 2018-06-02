@@ -32,7 +32,8 @@ function trendVis(prams) {
             projectCount[project['create_date'].split('-')[0]] += 1;
         });
 
-        let max_commit_count = 175; // 함수로 계산
+        let max_commit_count = Util.max_key(projectCount).val; // 함수로 계산
+        console.log(max_commit_count);
         let ratio_y = GRAPH_HEIGHT / max_commit_count;
         let time_end = parseInt(_.max(_.keys(projectCount)));
         let time_start = parseInt(_.min(_.keys(projectCount)));
@@ -159,12 +160,11 @@ function trendVis(prams) {
         if (conditionInfo.conditions.length < 1) return that.projectsData;
         let extractedProject = {};
         _.forEach(conditionInfo.conditions, function (condition) {
-            console.log(condition.key, condition.val);
             extractedProject = _.union(extractedProject, Util.extract(that.projectsData, condition.key, condition.val));
         });
+        console.log(extractedProject);
         return extractedProject;
     };
-
     this.projectsData = this.setProjectData(prams.conditionInfo);
     this.render({ project: this.projectsData });
 }

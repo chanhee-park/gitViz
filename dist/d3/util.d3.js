@@ -35,8 +35,8 @@ const d3Util = new function () {
         oneGraph.enter().append("path").attr("class", "pie " + classes).attr("d", arc)
         // .attr("stroke", "black")
         .attr("transform", "translate(" + cx + "," + cy + ")").style("fill", function (d, i) {
-            return ['#ff3333', '#ddcc33', '#55ee55', '#3333ff', '#aa55aa'][i];
-        });
+            return ['#5A1', '#32C', '#9B6', '#A31', '#1A9', '#16A', '#A81', '#A2A'][i];
+        }).attr('opacity', 0.75);
         return oneGraph;
     };
 }();

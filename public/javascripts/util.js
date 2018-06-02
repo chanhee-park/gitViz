@@ -16,11 +16,10 @@ const Util = new function () {
 
     this.extract = (objs, key, value) => {
         let extracted = [];
-        console.log(key);
-        console.log(value);
-        _.forEach(objs, function (obj, obj_key) {
-            console.log(obj[key]);
-            if (obj[key] === value || obj[key].indexOf(value) >= 0) {
+        _.forEach(objs, function (obj) {
+            if (Array.isArray(obj[key]) && obj[key].indexOf(value) >= 0) {
+                extracted.push(obj);
+            } else if (obj[key] === value) {
                 extracted.push(obj);
             }
         });
@@ -50,4 +49,16 @@ const Util = new function () {
         }
         return min;
     };
+
+    this.max_key = (obj) => {
+        let max = -1000000;
+        let maxkey = '';
+        _.forEach(obj, function (val, key) {
+            if (val > max) {
+                max = val;
+                maxkey = key;
+            }
+        });
+        return { key: maxkey, val: max };
+    }
 };

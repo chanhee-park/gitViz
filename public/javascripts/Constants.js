@@ -13,11 +13,14 @@ const FONT_SIZE_AXIS = 12;
 const FONT_SIZE_DESC = 14;
 
 const FIELD_COLORS = {
-    'f1': '#ff3333',
-    'f2': '#ddcc33',
-    'f3': '#55ee55',
-    'f4': '#3333ff',
-    'f5': '#aa55aa'
+    'graphics': '#5A1',
+    'mobile': '#32C',
+    'web': '#9B6',
+    'visualization': '#A31',
+    'ML': '#1A9',
+    'db': '#16A',
+    'Network': '#A81',
+    'OS': '#A2A',
 };
 
 

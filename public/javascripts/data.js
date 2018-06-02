@@ -195,30 +195,34 @@ const TEST_LINK_DATA = {
 };
 
 const Data = new function () {
-    let FIELDS = {};
-    let USERS = {};
-    let LINKS = {};
-    let REPOSITORIES = {};
+    this.FIELDS = {};
+    this.USERS = {};
+    this.LINKS = {};
+    this.REPOSITORIES = {};
 
+    let that = this;
 
     $.getJSON('../data/fields_final.json', function (data) {
-        FIELDS = data;
-        console.log(FIELDS);
-    });
-    $.getJSON('../data/users_final.json', function (data) {
-        USERS = data;
-        console.log(USERS);
+        that.FIELDS = data;
+        console.log('fields', that.FIELDS);
+        categorySelectZone(that.FIELDS);
     });
 
     $.getJSON('../data/links_final.json', function (data) {
-        LINKS = data;
-        console.log(LINKS);
+        that.LINKS = data;
+        console.log('links', that.LINKS);
+    });
+
+    $.getJSON('../data/users_final.json', function (data) {
+        that.USERS = data;
+        console.log('users', that.USERS);
+        userVis({ users: that.USERS, links: that.LINKS, fields: that.FIELDS });
     });
 
     $.getJSON('../data/repos_final.min.json', function (data) {
-        REPOSITORIES = data;
-        console.log(REPOSITORIES);
-        trendVis({ data: REPOSITORIES, conditionInfo: { descText: 'ALL PROJECT', conditions: [] } });
+        that.REPOSITORIES = data;
+        console.log('repos', that.REPOSITORIES);
+        trendVis({ data: that.REPOSITORIES, conditionInfo: { descText: 'ALL PROJECT', conditions: [] } });
     });
 
 };

@@ -19,8 +19,10 @@ async function userVis(param) {
 
     _.forEach(param.fields, function (field, fieldName) {
         _.forEach(field.keywords, function (keyword) {
-            keys.push(keyword);
-            keyField[keyword] = fieldName;
+            if (field.keywordCounts[keyword] > MINIMUM_CNT_OF_KEYWORD) {
+                keys.push(keyword);
+                keyField[keyword] = fieldName;
+            }
         });
     });
 
@@ -108,7 +110,12 @@ async function userVis(param) {
         this.coordinate = { x: this.coordinateX(), y: this.coordinateY() };
 
         this.render = function () {
-            let r = that.user.star / 10000;
+            if (this.coordinate.x === 0 || this.coordinate.y === 0) {
+                return;
+            }
+            let r = that.user.stars / 10000;
+            if (r > 35) r = 35;
+            if (r < 3) r = 3;
 
             let pieData = that.getFieldScores();
             d3Util.drawPie(g, that.user.id, pieData, that.coordinate.x, that.coordinate.y, r, "node");
@@ -119,19 +126,20 @@ async function userVis(param) {
                 cy: that.coordinate.y,
                 r: r,
                 fill: '#fff',
-                opacity: 0,
+                opacity: 0.1,
                 'class': 'node'
             }).on('mouseover', function () {
-                addTooltip();
+                // addTooltip();
             }).on('mouseout', function () {
                 d3.selectAll('.tooltip').remove();
             }).on('click', function () {
                 console.log(that.user.id);
                 d3.select('#trendRenderer > *').remove();
                 trendVis({
+                    data: Data.REPOSITORIES,
                     conditionInfo: {
                         descText: 'IS USER ' + user.name + '?',
-                        conditions: [{ key: 'userID', val: user.id }]
+                        conditions: [{ key: 'owner_id', val: user.id }, { key: 'users', val: user.id }]
                     }
                 });
             });
@@ -190,6 +198,9 @@ async function userVis(param) {
         });
 
         this.render = () => {
+            if (start.x === 0 || end.x === 0 || start.y === 0 || end.y === 0) {
+                return;
+            }
             g.append('line').attrs({
                 x1: start.x,
                 x2: end.x,
@@ -228,12 +239,14 @@ async function userVis(param) {
     });
     // 노드간 링크 생성
     _.forEach(linkData, function (link) {
-        links.push(new Link(link));
+        // if(link.projects.length>1){
+            links.push(new Link(link));
+        // }
     });
 
     // 링크 그리기
     _.forEach(links, function (link) {
-        link.render();
+        // link.render();
     });
 
     // radviz 내부 노드 그리기
@@ -241,5 +254,3 @@ async function userVis(param) {
         dataPoint.render();
     });
 }
-
-userVis({ users: TEST_USER_DATA, links: TEST_LINK_DATA, fields: TEST_FIELD_DATA });

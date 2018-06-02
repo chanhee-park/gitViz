@@ -110,7 +110,11 @@ async function userVis(param) {
         this.coordinate = { x: this.coordinateX(), y: this.coordinateY() };
 
         this.render = function () {
-            let r = (that.user.star) / 10000;
+            if (this.coordinate.x === 0 || this.coordinate.y === 0) {
+                return;
+            }
+            let r = (that.user.stars) / 10000;
+            if (r < 3) r = 3;
 
             let pieData = that.getFieldScores();
             d3Util.drawPie(g, that.user.id, pieData, that.coordinate.x, that.coordinate.y, r, "node");
@@ -121,7 +125,7 @@ async function userVis(param) {
                 cy: that.coordinate.y,
                 r: r,
                 fill: '#fff',
-                opacity: 0,
+                opacity: 0.1,
                 'class': 'node'
             }).on('mouseover', function () {
                 addTooltip();
@@ -141,6 +145,7 @@ async function userVis(param) {
         };
 
         let addTooltip = () => {
+            return;
             let r = (that.user.star) / 10000;
             g.append('rect').attrs({
                 x: that.coordinate.x + r + 20,
@@ -198,6 +203,9 @@ async function userVis(param) {
         });
 
         this.render = () => {
+            if (start.x === 0 || end.x === 0 || start.y === 0 || end.y === 0) {
+                return;
+            }
             g.append('line').attrs({
                 x1: start.x,
                 x2: end.x,
@@ -251,4 +259,3 @@ async function userVis(param) {
     });
 }
 
-userVis({ users: TEST_USER_DATA, links: TEST_LINK_DATA, fields: TEST_FIELD_DATA });

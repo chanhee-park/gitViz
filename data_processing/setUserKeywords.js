@@ -95,16 +95,23 @@ _.forEach(repos, function (rep) {
 
 // 키워드별 등장 횟수를 구한다.
 _.forEach(fields, function (f) {
-    f['keywordConts'] = {};
+    f['keywordCounts'] = {};
+    let newkeyword = [];
     _.forEach(f.keywords, function (keyword) {
         // console.log(keyword);
-        f['keywordConts'][keyword] = 0;
+        f['keywordCounts'][keyword] = 0;
         _.forEach(repos, function (rep) {
             if (rep.keywords.indexOf(keyword) >= 0) {
-                f['keywordConts'][keyword]++;
+                f['keywordCounts'][keyword]++;
             }
         });
+        if (f['keywordCounts'][keyword] > 0) {
+            newkeyword.push(keyword);
+        } else {
+            delete f['keywordCounts'][keyword];
+        }
     });
+    f.keywords = newkeyword;
 });
 
 // fs.writeFileSync('./fields_final.json', JSON.stringify(fields, null, 4));

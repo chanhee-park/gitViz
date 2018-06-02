@@ -6,6 +6,8 @@ let $selectZone = $('.category-select-zone');
 
 let $fieldList = $('.field-list');
 
+const MINIMUM_CNT_OF_KEYWORD = 0;
+
 $openButton.click(function () {
     $selectZone.css({
         left: 10
@@ -25,8 +27,10 @@ let categorySelectZone = fields => {
     _.forEach(fields, function (field, fieldName) {
         let htmlStr = "<div class='field'>" + "<div class='field-name'>" + fieldName + "</div>" + "<div class='category-list'>";
         _.forEach(field.keywords, async function (keyword) {
-            selected.push(keyword);
-            htmlStr += "<div class='category selected'>" + keyword + "</div>";
+            if (field.keywordCounts[keyword] > MINIMUM_CNT_OF_KEYWORD) {
+                selected.push(keyword);
+                htmlStr += "<div class='category selected'>" + keyword + "</div>";
+            }
         });
         htmlStr += "</div></div>";
         $fieldList.append(htmlStr);
@@ -53,8 +57,6 @@ let categorySelectZone = fields => {
                 }
             });
         });
-        userVis({ users: TEST_USER_DATA, links: TEST_LINK_DATA, fields: selectedField });
+        userVis({ users: Data.USERS, links: Data.LINKS, fields: selectedField });
     });
 };
-
-categorySelectZone(TEST_FIELD_DATA);
