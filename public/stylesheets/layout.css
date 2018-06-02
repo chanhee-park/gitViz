@@ -46,7 +46,7 @@
           .vis-comp-block-list .main-view .category-select-zone .field-list .field .category-list .category {
             display: inline-block;
             padding: 0 20px;
-            margin: 0 10px;
+            margin: 5px 10px;
             border-radius: 20px;
             cursor: pointer;
             opacity: 1; }

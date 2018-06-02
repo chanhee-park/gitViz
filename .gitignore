@@ -60,3 +60,7 @@ fabric.properties
 # Node Module
 .node_modules
 node_modules/
+
+# data file
+*.json
+*.csv
