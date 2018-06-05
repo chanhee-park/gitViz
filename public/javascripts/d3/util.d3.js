@@ -45,14 +45,15 @@ const d3Util = new function () {
         // 데이터 추가 및 렌더
         oneGraph.enter()
             .append("path")
+            .attr('id', 'pie' + id)
             .attr("class", "pie " + classes)
             .attr("d", arc)
-            // .attr("stroke", "black")
+            // .attr("stroke", '#333')
             .attr("transform", "translate(" + cx + "," + cy + ")")
             .style("fill", function (d, i) {
                 return ['#5A1', '#32C', '#9B6', '#A31', '#1A9', '#16A', '#A81', '#A2A'][i];
             })
-            .attr('opacity', 0.75);
+            .attr('opacity', 1);
         return oneGraph;
     };
 };

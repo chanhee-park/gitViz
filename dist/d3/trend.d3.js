@@ -1,21 +1,27 @@
-function trendVis(prams) {
+function trendVis(params) {
     const root = d3.select('#trendRenderer');
     const g = root.append('g');
 
     const WIDTH = 920;
     const HEIGHT = 580;
     const PADDING_LEFT = 60;
-    const PADDING_RIGHT = 100;
+    const PADDING_RIGHT = 50;
     const PADDING_TOP = 80;
     const PADDING_BOTTOM = 20;
 
     const GRAPH_WIDTH = WIDTH - PADDING_LEFT - PADDING_RIGHT;
     const GRAPH_HEIGHT = HEIGHT - PADDING_BOTTOM - PADDING_TOP;
 
-    this.projectsData = prams.data;
-
-    this.conditionText = prams.conditionInfo.descText;
+    this.projectsData = {};
     const that = this;
+
+    _.forEach(params.data, function (projectId) {
+        if (Data.REPOSITORIES[projectId] !== undefined) {
+            that.projectsData[projectId] = Data.REPOSITORIES[projectId];
+        }
+    });
+
+    console.log(that.projectsData);
 
     // 가로축
     g.append('line').attr('x1', PADDING_LEFT).attr('x2', GRAPH_WIDTH + PADDING_LEFT).attr('y1', GRAPH_HEIGHT + PADDING_TOP).attr('y2', GRAPH_HEIGHT + PADDING_TOP).attr('stroke', COLOR_AXIS);
@@ -32,13 +38,12 @@ function trendVis(prams) {
             projectCount[project['create_date'].split('-')[0]] += 1;
         });
 
-        let max_commit_count = Util.max_key(projectCount).val; // 함수로 계산
-        console.log(max_commit_count);
+        let max_commit_count = Util.max_key(projectCount).val;
         let ratio_y = GRAPH_HEIGHT / max_commit_count;
         let time_end = parseInt(_.max(_.keys(projectCount)));
         let time_start = parseInt(_.min(_.keys(projectCount)));
         let time_len = time_end - time_start + 1;
-        let interval_x = GRAPH_WIDTH / (time_len - 1);
+        let interval_x = GRAPH_WIDTH / time_len;
 
         let getCoord = val => {
             return {
@@ -47,8 +52,7 @@ function trendVis(prams) {
             };
         };
 
-        let condition = that.conditionText;
-        g.append('text').text('A change in the trend of a project filtered by the condition  "' + condition + '" .').attrs({
+        g.append('text').text('A change in the trend of a project filtered by the condition  "' + params.conditionInfo.descText + '" .').attrs({
             x: PADDING_LEFT,
             y: 15,
             'alignment-baseline': 'hanging',
@@ -58,7 +62,7 @@ function trendVis(prams) {
             'font-size': FONT_SIZE_DESC
         });
         // 가로축 척도
-        for (let time = 0; time < time_len; time++) {
+        for (let time = 0; time <= time_len; time++) {
 
             g.append('text').text(time + parseInt(_.min(_.keys(projectCount)))).attrs({
                 x: getCoord({ x: time, y: 0 }).x,
@@ -70,7 +74,7 @@ function trendVis(prams) {
             });
         }
         // 세로축 척도
-        for (let count = 0; count < max_commit_count; count += 10) {
+        for (let count = 0; count <= max_commit_count; count += 10) {
             g.append('text').text(count).attrs({
                 x: getCoord({ x: 0, y: count }).x - 5,
                 y: getCoord({ x: 0, y: count }).y,
@@ -80,7 +84,7 @@ function trendVis(prams) {
                 'font-size': FONT_SIZE_AXIS
             });
         }
-        g.append('text').text("Number of projects created in that year").attrs({
+        g.append('text').text("Number of projects created in thatKeyword year").attrs({
             x: PADDING_LEFT - 25,
             y: PADDING_TOP - 10,
             'alignment-baseline': 'ideographic',
@@ -95,7 +99,7 @@ function trendVis(prams) {
         let lineData = [];
         _.forEach(projectCount, function (counts, time) {
             time = time - _.min(_.keys(projectCount));
-            console.log('year', time + time_start, '-> ', counts, 'project');
+            // console.log('year', time + time_start, '-> ', counts, 'project');
             if (time === 0) {
                 lineData.push(getCoord({ x: 0, y: 0 }));
                 lineData.push(getCoord({ x: 0, y: counts }));
@@ -103,6 +107,7 @@ function trendVis(prams) {
             lineData.push(getCoord({ x: time + 0.5, y: counts }));
         });
 
+        lineData.push(getCoord({ x: time_len, y: 0 }));
         for (let i = time_len - 1; i >= 0; i--) {
             lineData.push(getCoord({ x: i + 0.5, y: 0 }));
         }
@@ -153,18 +158,18 @@ function trendVis(prams) {
         });
     };
 
-    this.setProjectData = conditionInfo => {
-        // conditionInfo.descText
-        // conditionInfo.conditions[0].key
-        // conditionInfo.conditions[0].val
-        if (conditionInfo.conditions.length < 1) return that.projectsData;
-        let extractedProject = {};
-        _.forEach(conditionInfo.conditions, function (condition) {
-            extractedProject = _.union(extractedProject, Util.extract(that.projectsData, condition.key, condition.val));
-        });
-        console.log(extractedProject);
-        return extractedProject;
-    };
-    this.projectsData = this.setProjectData(prams.conditionInfo);
+    // this.setProjectData = (conditionInfo) => {
+    //     // conditionInfo.descText
+    //     // conditionInfo.conditions[0].key
+    //     // conditionInfo.conditions[0].val
+    //     if (conditionInfo.conditions.length < 1) return thatKeyword.projectsData;
+    //     let extractedProject = {};
+    //     _.forEach(conditionInfo.conditions, function (condition) {
+    //         extractedProject = _.union(extractedProject, Util.extract(thatKeyword.projectsData, condition.key, condition.val));
+    //     });
+    //     console.log(extractedProject);
+    //     return extractedProject;
+    // };
+    // this.projectsData = this.setProjectData(prams.conditionInfo);
     this.render({ project: this.projectsData });
 }

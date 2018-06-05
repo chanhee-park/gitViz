@@ -15,4 +15,9 @@ svg#projectRenderer {
   width: 920px;
   height: 380px; }
 
+.pie {
+  opacity: 0.3; }
+  .pie.selected {
+    opacity: 1; }
+
 /*# sourceMappingURL=d3.renderer.css.map */

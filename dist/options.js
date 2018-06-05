@@ -23,10 +23,9 @@ $closeButton.click(function () {
 let categorySelectZone = fields => {
     _this.selected = [];
     let that = _this;
-
     _.forEach(fields, function (field, fieldName) {
         let htmlStr = "<div class='field'>" + "<div class='field-name'>" + fieldName + "</div>" + "<div class='category-list'>";
-        _.forEach(field.keywords, async function (keyword) {
+        _.forEach(field.keywords, function (keyword) {
             if (field.keywordCounts[keyword] > MINIMUM_CNT_OF_KEYWORD) {
                 selected.push(keyword);
                 htmlStr += "<div class='category selected'>" + keyword + "</div>";
