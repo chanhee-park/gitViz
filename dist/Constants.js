@@ -22,3 +22,4 @@ const FIELD_COLORS = {
     'Network': '#A81',
     'OS': '#A2A'
 };
+const UNSELECTED_OPACITY = 0.5;

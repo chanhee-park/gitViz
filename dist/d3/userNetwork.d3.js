@@ -7,7 +7,6 @@ async function userVis(param) {
     const RADVIZ_RADIUS = 300;
     const RADVIZ_CENTER_X = WIDTH / 2;
     const RADVIZ_CENTER_Y = 400;
-    const UNSELECTED_OPACITY = 0.3;
 
     const userData = param.users;
     const linkData = param.links;
@@ -43,6 +42,7 @@ async function userVis(param) {
                 }
             });
         });
+
         _.forEach(selectedLinks, function (selected) {
             selectedNodes.push(Data.LINKS[selected].start);
             selectedNodes.push(Data.LINKS[selected].end);
@@ -107,6 +107,8 @@ async function userVis(param) {
                 'transform': 'translate(' + textX + ',' + textY + ') rotate(' + (Util.radians_to_degrees(theta) - half) + ')',
                 'opacity': UNSELECTED_OPACITY,
                 'casss': 'keyword-text'
+            }).on("mouseover", function () {
+                d3.select(this).style("cursor", "pointer");
             }).on('click', function () {
                 console.log('클릭 :', thatKeyword.name);
                 if (selectedKeywords.indexOf(thatKeyword.name) < 0) {
@@ -200,6 +202,8 @@ async function userVis(param) {
                 // addTooltip();
             }).on('mouseout', function () {
                 d3.selectAll('.tooltip').remove();
+            }).on("mouseover", function () {
+                d3.select(this).style("cursor", "pointer");
             }).on('click', function () {
                 console.log('클릭 :', thatNode.user.id);
                 if (selectedNodes.indexOf(thatNode.user.id) < 0) {
@@ -277,6 +281,8 @@ async function userVis(param) {
                 opacity: 0.5,
                 'stroke-weight': '100px',
                 'class': 'link'
+            }).on("mouseover", function () {
+                d3.select(this).style("cursor", "pointer");
             }).on('click', function () {
                 console.log('클릭 :', id);
                 if (selectedLinks.indexOf(id) < 0) {

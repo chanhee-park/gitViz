@@ -42,6 +42,15 @@ function trendVis(params) {
     this.render = () => {
         d3.selectAll('.stackedArea').remove();
 
+        let fieldsCount = {};
+        _.forEach(Data.FIELDS, function (field, fieldName) {
+            fieldsCount[fieldName] = {};
+        });
+        _.forEach(that.projectsData, function (project) {
+            if (_.isNil(fieldsCount[project.field][project['create_date'].split('-')[0]])) fieldsCount[project.field][project['create_date'].split('-')[0]] = 0;
+            fieldsCount[project.field][project['create_date'].split('-')[0]] += 1;
+        });
+
         let projectCount = {};
         _.forEach(that.projectsData, function (project) {
             if (_.isNil(projectCount[project['create_date'].split('-')[0]])) projectCount[project['create_date'].split('-')[0]] = 0;
@@ -75,7 +84,6 @@ function trendVis(params) {
             });
         // 가로축 척도
         for (let time = 0; time <= time_len; time++) {
-
             g.append('text')
                 .text(time + parseInt(_.min(_.keys(projectCount))))
                 .attrs({
@@ -100,6 +108,8 @@ function trendVis(params) {
                     'font-size': FONT_SIZE_AXIS,
                 })
         }
+
+        // 세로축 척도 설명
         g.append('text')
             .text("Number of projects created in thatKeyword year")
             .attrs({
@@ -114,40 +124,56 @@ function trendVis(params) {
 
 
         // stacked Area Chart
-
-        let lineData = [];
-        _.forEach(projectCount, function (counts, time) {
-            time = time - _.min(_.keys(projectCount));
-            // console.log('year', time + time_start, '-> ', counts, 'project');
-            if (time === 0) {
-                lineData.push(getCoord({ x: 0, y: 0 }));
-                lineData.push(getCoord({ x: 0, y: counts }));
+        let stacked = _.fill(new Array(time_len), 0);
+        let preStacked = _.fill(new Array(time_len), 0);
+        _.forEach(fieldsCount, function (fieldCount, fieldName) {
+            let lineData = [];
+            for (let year = time_start; year <= time_end; year++) {
+                let time = year - time_start;
+                let counts = fieldCount[year] === undefined ? 0 : fieldCount[year];
+                if (time === 0) {
+                    lineData.push(getCoord({ x: 0, y: stacked[time] }));
+                    lineData.push(getCoord({ x: 0, y: stacked[time] + counts }));
+                }
+                lineData.push(getCoord({ x: time + 0.5, y: stacked[time] + counts }));
+                stacked[time] += counts;
             }
-            lineData.push(getCoord({ x: time + 0.5, y: counts }));
+
+            lineData.push(getCoord({ x: time_len, y: stacked[time_len - 1] }));
+            lineData.push(getCoord({ x: time_len, y: preStacked[time_len - 1] }));
+            for (let time = time_len - 1; time >= 0; time--) {
+                lineData.push(getCoord({ x: time + 0.5, y: preStacked[time] }));
+            }
+
+            g.append("path")
+                .attr("d", d3Util.line(lineData))
+                .attrs({
+                    fill: FIELD_COLORS[fieldName],
+                    stroke: '#FFF',
+                    opacity: UNSELECTED_OPACITY,
+                    'stroke-width': 2,
+                })
+                .on('mouseover', function () {
+                    d3.select(this).attr('opacity', 1);
+                    // addTooltip(d3.mouse(this)[0], d3.mouse(this)[1], project);
+                })
+                .on('mouseout', function () {
+                    d3.select(this).attr('opacity', UNSELECTED_OPACITY);
+                    // d3.selectAll('.tooltip').remove();
+                });
+            preStacked = _.clone(stacked);
         });
 
-        lineData.push(getCoord({ x: time_len, y: 0 }));
-        for (let i = time_len - 1; i >= 0; i--) {
-            lineData.push(getCoord({ x: i + 0.5, y: 0 }));
-        }
+        // _.forEach(projectCount, function (counts, time) {
+        //     time = time - _.min(_.keys(projectCount));
+        //     // console.log('year', time + time_start, '-> ', counts, 'project');
+        //     if (time === 0) {
+        //         lineData.push(getCoord({ x: 0, y: 0 }));
+        //         lineData.push(getCoord({ x: 0, y: counts }));
+        //     }
+        //     lineData.push(getCoord({ x: time + 0.5, y: counts }));
+        // });
 
-        g.append("path")
-            .attr("d", d3Util.line(lineData))
-            .attrs({
-                // fill: FIELD_COLORS[project.field],
-                fill: '#5aF',
-                stroke: '#FFF',
-                opacity: 0.8,
-                'stroke-width': 2,
-            })
-            .on('mouseover', function () {
-                d3.select(this).attr('opacity', 1);
-                // addTooltip(d3.mouse(this)[0], d3.mouse(this)[1], project);
-            })
-            .on('mouseout', function () {
-                d3.select(this).attr('opacity', 0.8);
-                // d3.selectAll('.tooltip').remove();
-            });
     };
 
     let addTooltip = (x, y, project) => {
