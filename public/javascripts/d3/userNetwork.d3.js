@@ -2,11 +2,11 @@ async function userVis(param) {
     const root = d3.select('#userNetworkRenderer');
     const g = root.append('g');
 
-    const WIDTH = 920;
-    const HEIGHT = 990;
-    const RADVIZ_RADIUS = 300;
+    const WIDTH = 1100;
+    const HEIGHT = 890;
+    const RADVIZ_RADIUS = 335;
     const RADVIZ_CENTER_X = WIDTH / 2;
-    const RADVIZ_CENTER_Y = 400;
+    const RADVIZ_CENTER_Y = (HEIGHT - 20) / 2;
 
     const userData = param.users;
     const linkData = param.links;
@@ -349,4 +349,3 @@ async function userVis(param) {
         dataPoint.render();
     });
 }
-

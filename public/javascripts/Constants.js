@@ -23,4 +23,3 @@ const FIELD_COLORS = {
     'OS': '#A2A',
 };
 const UNSELECTED_OPACITY = 0.5;
-

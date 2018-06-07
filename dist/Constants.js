@@ -1,18 +1,20 @@
-const PI = Math.PI;
+'use strict';
 
-const COLOR_TEXT_DESC = '#586069';
-const COLOR_AXIS = '#555';
-const COLOR_LINK = '#777';
+var PI = Math.PI;
 
-const GIT_A_COLOR = '#0366d6';
-const GIT_DARK_COLOR = '#25292E';
-const GIT_LIGHT_COLOR = '#f6f8fa';
-const GIT_DARKBG_TEXT_COLOR = '#C8C9CB';
+var COLOR_TEXT_DESC = '#586069';
+var COLOR_AXIS = '#555';
+var COLOR_LINK = '#777';
 
-const FONT_SIZE_AXIS = 12;
-const FONT_SIZE_DESC = 14;
+var GIT_A_COLOR = '#0366d6';
+var GIT_DARK_COLOR = '#25292E';
+var GIT_LIGHT_COLOR = '#f6f8fa';
+var GIT_DARKBG_TEXT_COLOR = '#C8C9CB';
 
-const FIELD_COLORS = {
+var FONT_SIZE_AXIS = 12;
+var FONT_SIZE_DESC = 14;
+
+var FIELD_COLORS = {
     'graphics': '#5A1',
     'mobile': '#32C',
     'web': '#9B6',
@@ -22,4 +24,4 @@ const FIELD_COLORS = {
     'Network': '#A81',
     'OS': '#A2A'
 };
-const UNSELECTED_OPACITY = 0.5;
+var UNSELECTED_OPACITY = 0.5;

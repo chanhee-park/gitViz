@@ -1,19 +1,21 @@
+'use strict';
+
 function trendVis(params) {
-    const root = d3.select('#trendRenderer');
-    const g = root.append('g');
+    var root = d3.select('#trendRenderer');
+    var g = root.append('g');
 
-    const WIDTH = 920;
-    const HEIGHT = 580;
-    const PADDING_LEFT = 60;
-    const PADDING_RIGHT = 50;
-    const PADDING_TOP = 80;
-    const PADDING_BOTTOM = 20;
+    var WIDTH = 735;
+    var HEIGHT = 345;
+    var PADDING_LEFT = 60;
+    var PADDING_RIGHT = 50;
+    var PADDING_TOP = 80;
+    var PADDING_BOTTOM = 20;
 
-    const GRAPH_WIDTH = WIDTH - PADDING_LEFT - PADDING_RIGHT;
-    const GRAPH_HEIGHT = HEIGHT - PADDING_BOTTOM - PADDING_TOP;
+    var GRAPH_WIDTH = WIDTH - PADDING_LEFT - PADDING_RIGHT;
+    var GRAPH_HEIGHT = HEIGHT - PADDING_BOTTOM - PADDING_TOP;
 
     this.projectsData = {};
-    const that = this;
+    var that = this;
 
     _.forEach(params.data, function (projectId) {
         if (Data.REPOSITORIES[projectId] !== undefined) {
@@ -29,10 +31,10 @@ function trendVis(params) {
     // 세로축
     g.append('line').attr('x1', PADDING_LEFT).attr('x2', PADDING_LEFT).attr('y1', PADDING_TOP).attr('y2', GRAPH_HEIGHT + PADDING_TOP).attr('stroke', COLOR_AXIS);
 
-    this.render = () => {
+    this.render = function () {
         d3.selectAll('.stackedArea').remove();
 
-        let fieldsCount = {};
+        var fieldsCount = {};
         _.forEach(Data.FIELDS, function (field, fieldName) {
             fieldsCount[fieldName] = {};
         });
@@ -41,20 +43,20 @@ function trendVis(params) {
             fieldsCount[project.field][project['create_date'].split('-')[0]] += 1;
         });
 
-        let projectCount = {};
+        var projectCount = {};
         _.forEach(that.projectsData, function (project) {
             if (_.isNil(projectCount[project['create_date'].split('-')[0]])) projectCount[project['create_date'].split('-')[0]] = 0;
             projectCount[project['create_date'].split('-')[0]] += 1;
         });
 
-        let max_commit_count = Util.max_key(projectCount).val;
-        let ratio_y = GRAPH_HEIGHT / max_commit_count;
-        let time_end = parseInt(_.max(_.keys(projectCount)));
-        let time_start = parseInt(_.min(_.keys(projectCount)));
-        let time_len = time_end - time_start + 1;
-        let interval_x = GRAPH_WIDTH / time_len;
+        var max_commit_count = Util.max_key(projectCount).val;
+        var ratio_y = GRAPH_HEIGHT / max_commit_count;
+        var time_end = parseInt(_.max(_.keys(projectCount)));
+        var time_start = parseInt(_.min(_.keys(projectCount)));
+        var time_len = time_end - time_start + 1;
+        var interval_x = GRAPH_WIDTH / time_len;
 
-        let getCoord = val => {
+        var getCoord = function getCoord(val) {
             return {
                 x: val.x * interval_x + PADDING_LEFT,
                 y: PADDING_TOP + GRAPH_HEIGHT - val.y * ratio_y
@@ -71,7 +73,7 @@ function trendVis(params) {
             'font-size': FONT_SIZE_DESC
         });
         // 가로축 척도
-        for (let time = 0; time <= time_len; time++) {
+        for (var time = 0; time <= time_len; time++) {
             g.append('text').text(time + parseInt(_.min(_.keys(projectCount)))).attrs({
                 x: getCoord({ x: time, y: 0 }).x,
                 y: getCoord({ x: time, y: 0 }).y,
@@ -82,7 +84,7 @@ function trendVis(params) {
             });
         }
         // 세로축 척도
-        for (let count = 0; count <= max_commit_count; count += 10) {
+        for (var count = 0; count <= max_commit_count; count += 10) {
             g.append('text').text(count).attrs({
                 x: getCoord({ x: 0, y: count }).x - 5,
                 y: getCoord({ x: 0, y: count }).y,
@@ -105,25 +107,25 @@ function trendVis(params) {
         });
 
         // stacked Area Chart
-        let stacked = _.fill(new Array(time_len), 0);
-        let preStacked = _.fill(new Array(time_len), 0);
+        var stacked = _.fill(new Array(time_len), 0);
+        var preStacked = _.fill(new Array(time_len), 0);
         _.forEach(fieldsCount, function (fieldCount, fieldName) {
-            let lineData = [];
-            for (let year = time_start; year <= time_end; year++) {
-                let time = year - time_start;
-                let counts = fieldCount[year] === undefined ? 0 : fieldCount[year];
-                if (time === 0) {
-                    lineData.push(getCoord({ x: 0, y: stacked[time] }));
-                    lineData.push(getCoord({ x: 0, y: stacked[time] + counts }));
+            var lineData = [];
+            for (var year = time_start; year <= time_end; year++) {
+                var _time = year - time_start;
+                var counts = fieldCount[year] === undefined ? 0 : fieldCount[year];
+                if (_time === 0) {
+                    lineData.push(getCoord({ x: 0, y: stacked[_time] }));
+                    lineData.push(getCoord({ x: 0, y: stacked[_time] + counts }));
                 }
-                lineData.push(getCoord({ x: time + 0.5, y: stacked[time] + counts }));
-                stacked[time] += counts;
+                lineData.push(getCoord({ x: _time + 0.5, y: stacked[_time] + counts }));
+                stacked[_time] += counts;
             }
 
             lineData.push(getCoord({ x: time_len, y: stacked[time_len - 1] }));
             lineData.push(getCoord({ x: time_len, y: preStacked[time_len - 1] }));
-            for (let time = time_len - 1; time >= 0; time--) {
-                lineData.push(getCoord({ x: time + 0.5, y: preStacked[time] }));
+            for (var _time2 = time_len - 1; _time2 >= 0; _time2--) {
+                lineData.push(getCoord({ x: _time2 + 0.5, y: preStacked[_time2] }));
             }
 
             g.append("path").attr("d", d3Util.line(lineData)).attrs({
@@ -152,7 +154,7 @@ function trendVis(params) {
         // });
     };
 
-    let addTooltip = (x, y, project) => {
+    var addTooltip = function addTooltip(x, y, project) {
         g.append('rect').attrs({
             x: x + 40,
             y: y - 30,

@@ -4,16 +4,16 @@ svg {
   background-color: #fff; }
 
 svg#userNetworkRenderer {
-  width: 920px;
-  height: 990px; }
+  width: 1100px;
+  height: 890px; }
 
 svg#trendRenderer {
-  width: 920px;
-  height: 580px; }
+  width: 735px;
+  height: 345px; }
 
 svg#projectRenderer {
-  width: 920px;
-  height: 380px; }
+  width: 730px;
+  height: 530px; }
 
 .pie {
   opacity: 0.3; }

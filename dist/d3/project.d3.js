@@ -1,9 +1,11 @@
-const projectVis = new function () {
+'use strict';
+
+var projectVis = new function () {
     this.data = [];
 
-    const width = 920;
-    const height = 380;
+    var width = 730;
+    var height = 530;
 
-    const root = d3.select('#projectRenderer');
-    const g = root.append('g');
+    var root = d3.select('#projectRenderer');
+    var g = root.append('g');
 }();

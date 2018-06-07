@@ -2,8 +2,8 @@ function trendVis(params) {
     const root = d3.select('#trendRenderer');
     const g = root.append('g');
 
-    const WIDTH = 920;
-    const HEIGHT = 580;
+    const WIDTH = 735;
+    const HEIGHT = 345;
     const PADDING_LEFT = 60;
     const PADDING_RIGHT = 50;
     const PADDING_TOP = 80;
