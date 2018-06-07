@@ -23,7 +23,7 @@ $closeButton.click(function () {
 });
 
 var categorySelectZone = function categorySelectZone(fields) {
-    undefined.selected = [];
+    var selected = [];
     var that = undefined;
     _.forEach(fields, function (field, fieldName) {
         var htmlStr = "<div class='field'>" + "<div class='field-name'>" + fieldName + "</div>" + "<div class='category-list'>";

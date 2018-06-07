@@ -2,7 +2,7 @@
 
 var userVis = function () {
     var _ref = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(param) {
-        var root, g, WIDTH, HEIGHT, RADVIZ_RADIUS, RADVIZ_CENTER_X, RADVIZ_CENTER_Y, userData, linkData, keys, keyField, attractors, dataPoints, links, selectedNodes, selectedKeywords, selectedLinks, update, Attractor, DataPoint, Link;
+        var root, g, WIDTH, HEIGHT, RADVIZ_RADIUS, RADVIZ_CENTER_X, RADVIZ_CENTER_Y, userData, linkData, keys, keyField, attractors, dataPoints, links, selectedNodes, selectedKeywords, selectedLinks, update, Attractor, DataPoint, Link, save;
         return regeneratorRuntime.wrap(function _callee$(_context) {
             while (1) {
                 switch (_context.prev = _context.next) {
@@ -36,7 +36,7 @@ var userVis = function () {
                                     y1: start.y,
                                     y2: end.y,
                                     stroke: COLOR_LINK,
-                                    opacity: 0.5,
+                                    opacity: UNSELECTED_OPACITY,
                                     'stroke-weight': '100px',
                                     'class': 'link'
                                 }).on("mouseover", function () {
@@ -119,15 +119,15 @@ var userVis = function () {
                                     r: r,
                                     fill: '#fff',
                                     'class': 'node',
-                                    'opacity': 0.1
+                                    'opacity': 0
                                 }).on('mouseover', function () {
-                                    // addTooltip();
+                                    addTooltip(thatNode);
+                                    d3.select(this).style("cursor", "pointer");
                                 }).on('mouseout', function () {
                                     d3.selectAll('.tooltip').remove();
-                                }).on("mouseover", function () {
-                                    d3.select(this).style("cursor", "pointer");
                                 }).on('click', function () {
                                     console.log('클릭 :', thatNode.user.id);
+                                    // addTooltip();
                                     if (selectedNodes.indexOf(thatNode.user.id) < 0) {
                                         selectedNodes.push(thatNode.user.id);
                                     } else {
@@ -137,36 +137,69 @@ var userVis = function () {
                                 });
                             };
 
-                            var addTooltip = function addTooltip() {
-                                return;
-                                var r = thatNode.user.star / 10000;
+                            var addTooltip = function addTooltip(node) {
+                                var r = node.user.stars / 10000;
+                                var keywordKeys = _.keys(node.user.related_keyword);
+
+                                var x = node.coordinate.x + r + 20;
+                                var y = node.coordinate.y - r - 20;
+                                var width = 400;
+                                var height = 120 + Math.floor(keywordKeys.length / 2) * 1.5 * FONT_SIZE_DESC;
+                                y = height + y > HEIGHT ? HEIGHT - height - 10 : y;
+
                                 g.append('rect').attrs({
-                                    x: thatNode.coordinate.x + r + 20,
-                                    y: thatNode.coordinate.y - r - 20,
-                                    width: 150,
-                                    height: 200,
-                                    fill: GIT_DARK_COLOR,
+                                    x: x,
+                                    y: y,
+                                    width: width,
+                                    height: height,
+                                    fill: GIT_LIGHT_COLOR,
+                                    stroke: GIT_DARK_COLOR,
+                                    'stroke-width': 1,
                                     'class': 'tooltip tooltip-box'
                                 });
-                                d3Util.drawTriangle(g, thatNode.coordinate.x + r + 20, thatNode.coordinate.y - 2, GIT_DARK_COLOR, 'tooltip tooltip-box');
-                                g.append('text').text('name : ' + thatNode.user.name).attrs({
-                                    x: thatNode.coordinate.x + r + 30,
-                                    y: thatNode.coordinate.y - r - 10,
+
+                                // d3Util.drawTriangle(g, node.coordinate.x + r + 20, node.coordinate.y - 2, GIT_LIGHT_COLOR, 'tooltip tooltip-box');
+
+                                g.append('text').text('name : ' + node.user.name).attrs({
+                                    x: x + 10,
+                                    y: y + 10,
                                     'alignment-baseline': 'hanging',
                                     'text-anchor': 'start',
-                                    fill: GIT_DARKBG_TEXT_COLOR,
+                                    fill: GIT_DARK_COLOR,
                                     'font-size': FONT_SIZE_DESC,
                                     'class': 'tooltip tooltip-text'
 
                                 });
-                                g.append('text').text('star : ' + thatNode.user.star).attrs({
-                                    x: thatNode.coordinate.x + r + 30,
-                                    y: thatNode.coordinate.y - r - 10 + FONT_SIZE_DESC * 2,
+                                g.append('text').text('star : ' + node.user.stars).attrs({
+                                    x: x + 10,
+                                    y: y + 10 + FONT_SIZE_DESC * 2,
                                     'alignment-baseline': 'hanging',
                                     'text-anchor': 'start',
-                                    fill: GIT_DARKBG_TEXT_COLOR,
+                                    fill: GIT_DARK_COLOR,
                                     'font-size': FONT_SIZE_DESC,
                                     'class': 'tooltip tooltip-text'
+                                });
+
+                                g.append('text').text('keywords : ').attrs({
+                                    x: x + 10,
+                                    y: y + 10 + FONT_SIZE_DESC * 4,
+                                    'alignment-baseline': 'hanging',
+                                    'text-anchor': 'start',
+                                    fill: GIT_DARK_COLOR,
+                                    'font-size': FONT_SIZE_DESC,
+                                    'class': 'tooltip tooltip-text'
+                                });
+
+                                _.forEach(keywordKeys, function (keywordKey, i) {
+                                    g.append('text').text(keywordKey).attrs({
+                                        x: x + 20 + i % 2 * 200,
+                                        y: y + 10 + FONT_SIZE_DESC * (5.5 + Math.floor(i / 2) * 1.5),
+                                        'alignment-baseline': 'hanging',
+                                        'text-anchor': 'start',
+                                        fill: FIELD_COLORS[keyField[keywordKey]],
+                                        'font-size': FONT_SIZE_DESC,
+                                        'class': 'tooltip tooltip-text'
+                                    });
                                 });
                             };
                         };
@@ -174,6 +207,7 @@ var userVis = function () {
                         Attractor = function Attractor(name, theta) {
                             var _this = this;
 
+                            // theta = theta - 90;
                             this.name = name;
                             this.field = keyField[name];
                             this.x = RADVIZ_CENTER_X + Math.cos(theta) * RADVIZ_RADIUS;
@@ -217,7 +251,7 @@ var userVis = function () {
                                     x2: 5,
                                     stroke: COLOR_AXIS,
                                     'stroke-weight': '1px',
-                                    'opacity': 0.3,
+                                    'opacity': UNSELECTED_OPACITY / 2,
                                     'transform': 'translate(' + _this.x + ',' + _this.y + ') rotate(' + (Util.radians_to_degrees(theta) - half) + ')'
                                 });
                                 return thatKeyword;
@@ -344,11 +378,34 @@ var userVis = function () {
                         });
 
                         // radviz 내부 노드 그리기
+                        save = {};
+
                         _.forEach(dataPoints, function (dataPoint) {
                             dataPoint.render();
-                        });
+                            var x = dataPoint.coordinateX();
+                            var y = dataPoint.coordinateY();
+                            var r = dataPoint.user.stars / 10000;
 
-                    case 28:
+                            save[dataPoint.user.id] = { id: dataPoint.user.id, x: x, y: y, r: r };
+                        });
+                        //
+                        // function download(filename, text) {
+                        //     var element = document.createElement('a');
+                        //     element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
+                        //     element.setAttribute('download', filename);
+                        //
+                        //     element.style.display = 'none';
+                        //     document.body.appendChild(element);
+                        //
+                        //     element.click();
+                        //     console.log('hi');
+                        //     document.body.removeChild(element);
+                        // }
+                        //
+                        // download('circles2.json', JSON.stringify(save));
+                        //
+
+                    case 29:
                     case 'end':
                         return _context.stop();
                 }

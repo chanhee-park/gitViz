@@ -5,7 +5,8 @@ var d3Util = new function () {
         return d.x;
     }).y(function (d) {
         return d.y;
-    }).curve(d3.curveLinear);
+    }).curve(d3.curveLinear); // curveBasis
+
 
     this.drawTriangle = function (svg, x, y, color, classes) {
         var g_tri = svg.append('g');
@@ -37,7 +38,7 @@ var d3Util = new function () {
         oneGraph.enter().append("path").attr('id', 'pie' + id).attr("class", "pie " + classes).attr("d", arc)
         // .attr("stroke", '#333')
         .attr("transform", "translate(" + cx + "," + cy + ")").style("fill", function (d, i) {
-            return ['#5A1', '#32C', '#9B6', '#A31', '#1A9', '#16A', '#A81', '#A2A'][i];
+            return ['#aa736a', '#5A1', '#536099', '#A31', '#11aa7f', '#A2A', '#a1aa1e', '#9b6'][i];
         }).attr('opacity', 1);
         return oneGraph;
     };

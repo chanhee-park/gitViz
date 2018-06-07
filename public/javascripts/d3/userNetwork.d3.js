@@ -83,6 +83,7 @@ async function userVis(param) {
     }
 
     function Attractor(name, theta) {
+        // theta = theta - 90;
         this.name = name;
         this.field = keyField[name];
         this.x = RADVIZ_CENTER_X + Math.cos(theta) * RADVIZ_RADIUS;
@@ -131,7 +132,7 @@ async function userVis(param) {
                 x2: 5,
                 stroke: COLOR_AXIS,
                 'stroke-weight': '1px',
-                'opacity': 0.3,
+                'opacity': UNSELECTED_OPACITY / 2,
                 'transform': 'translate(' + this.x + ',' + this.y + ') rotate(' + (Util.radians_to_degrees(theta) - half) + ')'
             });
             return thatKeyword;
@@ -202,15 +203,15 @@ async function userVis(param) {
                 r: r,
                 fill: '#fff',
                 'class': 'node',
-                'opacity': 0.1
+                'opacity': 0
             }).on('mouseover', function () {
-                // addTooltip();
+                addTooltip(thatNode);
+                d3.select(this).style("cursor", "pointer");
             }).on('mouseout', function () {
                 d3.selectAll('.tooltip').remove();
-            }).on("mouseover", function () {
-                d3.select(this).style("cursor", "pointer");
             }).on('click', function () {
                 console.log('클릭 :', thatNode.user.id);
+                // addTooltip();
                 if (selectedNodes.indexOf(thatNode.user.id) < 0) {
                     selectedNodes.push(thatNode.user.id);
                 } else {
@@ -221,41 +222,78 @@ async function userVis(param) {
 
         };
 
-        let addTooltip = () => {
-            return;
-            let r = (thatNode.user.star) / 10000;
+        let addTooltip = (node) => {
+            let r = (node.user.stars) / 10000;
+            let keywordKeys = _.keys(node.user.related_keyword);
+
+            let x = node.coordinate.x + r + 20;
+            let y = node.coordinate.y - r - 20;
+            let width = 400;
+            let height = 120 + Math.floor(keywordKeys.length / 2) * 1.5 * FONT_SIZE_DESC;
+            y = (height + y > HEIGHT) ? HEIGHT - height - 10 : y;
+
             g.append('rect').attrs({
-                x: thatNode.coordinate.x + r + 20,
-                y: thatNode.coordinate.y - r - 20,
-                width: 150,
-                height: 200,
-                fill: GIT_DARK_COLOR,
+                x: x,
+                y: y,
+                width: width,
+                height: height,
+                fill: GIT_LIGHT_COLOR,
+                stroke: GIT_DARK_COLOR,
+                'stroke-width': 1,
                 'class': 'tooltip tooltip-box'
             });
-            d3Util.drawTriangle(g, thatNode.coordinate.x + r + 20, thatNode.coordinate.y - 2, GIT_DARK_COLOR, 'tooltip tooltip-box');
+
+            // d3Util.drawTriangle(g, node.coordinate.x + r + 20, node.coordinate.y - 2, GIT_LIGHT_COLOR, 'tooltip tooltip-box');
+
             g.append('text')
-                .text('name : ' + thatNode.user.name)
+                .text('name : ' + node.user.name)
                 .attrs({
-                    x: thatNode.coordinate.x + r + 30,
-                    y: thatNode.coordinate.y - r - 10,
+                    x: x + 10,
+                    y: y + 10,
                     'alignment-baseline': 'hanging',
                     'text-anchor': 'start',
-                    fill: GIT_DARKBG_TEXT_COLOR,
+                    fill: GIT_DARK_COLOR,
                     'font-size': FONT_SIZE_DESC,
                     'class': 'tooltip tooltip-text'
 
                 });
             g.append('text')
-                .text('star : ' + thatNode.user.star)
+                .text('star : ' + node.user.stars)
                 .attrs({
-                    x: thatNode.coordinate.x + r + 30,
-                    y: thatNode.coordinate.y - r - 10 + FONT_SIZE_DESC * 2,
+                    x: x + 10,
+                    y: y + 10 + FONT_SIZE_DESC * 2,
                     'alignment-baseline': 'hanging',
                     'text-anchor': 'start',
-                    fill: GIT_DARKBG_TEXT_COLOR,
+                    fill: GIT_DARK_COLOR,
                     'font-size': FONT_SIZE_DESC,
                     'class': 'tooltip tooltip-text'
                 });
+
+            g.append('text')
+                .text('keywords : ')
+                .attrs({
+                    x: x + 10,
+                    y: y + 10 + FONT_SIZE_DESC * 4,
+                    'alignment-baseline': 'hanging',
+                    'text-anchor': 'start',
+                    fill: GIT_DARK_COLOR,
+                    'font-size': FONT_SIZE_DESC,
+                    'class': 'tooltip tooltip-text'
+                });
+
+            _.forEach(keywordKeys, function (keywordKey, i) {
+                g.append('text')
+                    .text(keywordKey)
+                    .attrs({
+                        x: x + 20 + (i % 2) * 200,
+                        y: y + 10 + FONT_SIZE_DESC * (5.5 + Math.floor(i / 2) * 1.5),
+                        'alignment-baseline': 'hanging',
+                        'text-anchor': 'start',
+                        fill: FIELD_COLORS[keyField[keywordKey]],
+                        'font-size': FONT_SIZE_DESC,
+                        'class': 'tooltip tooltip-text'
+                    });
+            });
         }
     }
 
@@ -289,7 +327,7 @@ async function userVis(param) {
                 y1: start.y,
                 y2: end.y,
                 stroke: COLOR_LINK,
-                opacity: 0.5,
+                opacity: UNSELECTED_OPACITY,
                 'stroke-weight': '100px',
                 'class': 'link',
             }).on("mouseover", function () {
@@ -345,7 +383,29 @@ async function userVis(param) {
     });
 
     // radviz 내부 노드 그리기
+    let save = {};
     _.forEach(dataPoints, function (dataPoint) {
         dataPoint.render();
+        let x = dataPoint.coordinateX();
+        let y = dataPoint.coordinateY();
+        let r = dataPoint.user.stars / 10000;
+
+        save[dataPoint.user.id] = { id: dataPoint.user.id, x: x, y: y, r: r };
     });
+    //
+    // function download(filename, text) {
+    //     var element = document.createElement('a');
+    //     element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
+    //     element.setAttribute('download', filename);
+    //
+    //     element.style.display = 'none';
+    //     document.body.appendChild(element);
+    //
+    //     element.click();
+    //     console.log('hi');
+    //     document.body.removeChild(element);
+    // }
+    //
+    // download('circles2.json', JSON.stringify(save));
+    //
 }

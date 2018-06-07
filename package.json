@@ -6,6 +6,7 @@
     "start": "node ./bin/www"
   },
   "dependencies": {
+    "babel-polyfill": "^6.26.0",
     "cookie-parser": "~1.4.3",
     "d3": "^5.4.0",
     "d3-selection-multi": "^1.0.1",

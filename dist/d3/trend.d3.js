@@ -6,24 +6,22 @@ function trendVis(params) {
 
     var WIDTH = 735;
     var HEIGHT = 345;
-    var PADDING_LEFT = 60;
-    var PADDING_RIGHT = 50;
-    var PADDING_TOP = 80;
+    var PADDING_LEFT = 80;
+    var PADDING_RIGHT = 40;
+    var PADDING_TOP = 40;
     var PADDING_BOTTOM = 20;
 
     var GRAPH_WIDTH = WIDTH - PADDING_LEFT - PADDING_RIGHT;
     var GRAPH_HEIGHT = HEIGHT - PADDING_BOTTOM - PADDING_TOP;
 
-    this.projectsData = {};
+    var projectsData = {};
     var that = this;
 
     _.forEach(params.data, function (projectId) {
         if (Data.REPOSITORIES[projectId] !== undefined) {
-            that.projectsData[projectId] = Data.REPOSITORIES[projectId];
+            projectsData[projectId] = Data.REPOSITORIES[projectId];
         }
     });
-
-    console.log(that.projectsData);
 
     // 가로축
     g.append('line').attr('x1', PADDING_LEFT).attr('x2', GRAPH_WIDTH + PADDING_LEFT).attr('y1', GRAPH_HEIGHT + PADDING_TOP).attr('y2', GRAPH_HEIGHT + PADDING_TOP).attr('stroke', COLOR_AXIS);
@@ -31,20 +29,21 @@ function trendVis(params) {
     // 세로축
     g.append('line').attr('x1', PADDING_LEFT).attr('x2', PADDING_LEFT).attr('y1', PADDING_TOP).attr('y2', GRAPH_HEIGHT + PADDING_TOP).attr('stroke', COLOR_AXIS);
 
-    this.render = function () {
+    var render = function render() {
+
         d3.selectAll('.stackedArea').remove();
 
         var fieldsCount = {};
         _.forEach(Data.FIELDS, function (field, fieldName) {
             fieldsCount[fieldName] = {};
         });
-        _.forEach(that.projectsData, function (project) {
+        _.forEach(projectsData, function (project) {
             if (_.isNil(fieldsCount[project.field][project['create_date'].split('-')[0]])) fieldsCount[project.field][project['create_date'].split('-')[0]] = 0;
             fieldsCount[project.field][project['create_date'].split('-')[0]] += 1;
         });
 
         var projectCount = {};
-        _.forEach(that.projectsData, function (project) {
+        _.forEach(projectsData, function (project) {
             if (_.isNil(projectCount[project['create_date'].split('-')[0]])) projectCount[project['create_date'].split('-')[0]] = 0;
             projectCount[project['create_date'].split('-')[0]] += 1;
         });
@@ -63,15 +62,6 @@ function trendVis(params) {
             };
         };
 
-        g.append('text').text('A change in the trend of a project filtered by the condition  "' + params.conditionInfo.descText + '" .').attrs({
-            x: PADDING_LEFT,
-            y: 15,
-            'alignment-baseline': 'hanging',
-            'text-anchor': 'start',
-            'fill': COLOR_TEXT_DESC,
-            'font-weight': '600',
-            'font-size': FONT_SIZE_DESC
-        });
         // 가로축 척도
         for (var time = 0; time <= time_len; time++) {
             g.append('text').text(time + parseInt(_.min(_.keys(projectCount)))).attrs({
@@ -84,7 +74,7 @@ function trendVis(params) {
             });
         }
         // 세로축 척도
-        for (var count = 0; count <= max_commit_count; count += 10) {
+        for (var count = 0; count <= max_commit_count; count += Math.ceil(max_commit_count / 10)) {
             g.append('text').text(count).attrs({
                 x: getCoord({ x: 0, y: count }).x - 5,
                 y: getCoord({ x: 0, y: count }).y,
@@ -131,72 +121,84 @@ function trendVis(params) {
             g.append("path").attr("d", d3Util.line(lineData)).attrs({
                 fill: FIELD_COLORS[fieldName],
                 stroke: '#FFF',
-                opacity: UNSELECTED_OPACITY,
+                opacity: UNSELECTED_OPACITY + 0.2,
                 'stroke-width': 2
             }).on('mouseover', function () {
                 d3.select(this).attr('opacity', 1);
-                // addTooltip(d3.mouse(this)[0], d3.mouse(this)[1], project);
+                addTooltip(d3.mouse(this)[0], d3.mouse(this)[1], fieldName);
             }).on('mouseout', function () {
-                d3.select(this).attr('opacity', UNSELECTED_OPACITY);
-                // d3.selectAll('.tooltip').remove();
+                d3.select(this).attr('opacity', UNSELECTED_OPACITY + 0.2);
+                d3.selectAll('.tooltip').remove();
+            }).on('click', function () {
+                d3.selectAll('#keywordRankingRenderer > *').remove();
+                keywordRankingVis({ fieldName: fieldName, projectsData: projectsData });
             });
             preStacked = _.clone(stacked);
         });
-
-        // _.forEach(projectCount, function (counts, time) {
-        //     time = time - _.min(_.keys(projectCount));
-        //     // console.log('year', time + time_start, '-> ', counts, 'project');
-        //     if (time === 0) {
-        //         lineData.push(getCoord({ x: 0, y: 0 }));
-        //         lineData.push(getCoord({ x: 0, y: counts }));
-        //     }
-        //     lineData.push(getCoord({ x: time + 0.5, y: counts }));
-        // });
     };
 
-    var addTooltip = function addTooltip(x, y, project) {
+    var addTooltip = function addTooltip(x, y, fieldName) {
+        var projects = [];
+        _.forEach(projectsData, function (project) {
+            if (project.field === fieldName) {
+                projects.push(project);
+            }
+        });
+        projects = _.sortBy(projects, function (p) {
+            return p.star;
+        });
+        var representativeProjects = [];
+        for (var i = 0; i < 10; i++) {
+            representativeProjects.push(projects.pop());
+            if (projects.length === 0) break;
+        }
+
+        x = x + 20;
+        y = y - 20;
+        var width = 450;
+        var height = 200;
+        y = height + y > HEIGHT ? HEIGHT - height - 10 : y;
+
         g.append('rect').attrs({
-            x: x + 40,
-            y: y - 30,
-            width: 250,
-            height: 200,
-            fill: GIT_DARK_COLOR,
+            x: x,
+            y: y,
+            width: width,
+            height: height,
+            fill: GIT_LIGHT_COLOR,
+            stroke: GIT_DARK_COLOR,
+            'stroke-width': 1,
             'class': 'tooltip tooltip-box'
         });
-        d3Util.drawTriangle(g, x + 40, y, GIT_DARK_COLOR, 'tooltip tooltip-box');
-        g.append('text').text('name : ' + project.name).attrs({
-            x: x + 50,
-            y: y - 15,
+        g.append('text').text('field : ' + fieldName).attrs({
+            x: x + 10,
+            y: y + 10,
             'alignment-baseline': 'hanging',
             'text-anchor': 'start',
-            fill: GIT_DARKBG_TEXT_COLOR,
+            fill: GIT_DARK_COLOR,
             'font-size': FONT_SIZE_DESC,
             'class': 'tooltip tooltip-text'
-
         });
-        g.append('text').text('star : ' + project.star).attrs({
-            x: x + 50,
-            y: y - 15 + FONT_SIZE_DESC * 2,
+        g.append('text').text('Representative projects : ').attrs({
+            x: x + 10,
+            y: y + 10 + FONT_SIZE_DESC * 2,
             'alignment-baseline': 'hanging',
             'text-anchor': 'start',
-            fill: GIT_DARKBG_TEXT_COLOR,
+            fill: GIT_DARK_COLOR,
             'font-size': FONT_SIZE_DESC,
             'class': 'tooltip tooltip-text'
+        });
+        _.forEach(representativeProjects, function (project, i) {
+            g.append('text').text(project.name).attrs({
+                x: x + 30 + i % 2 * 200,
+                y: y + 10 + FONT_SIZE_DESC * 3 + FONT_SIZE_DESC * (Math.floor(i / 2) * 1.5),
+                'alignment-baseline': 'hanging',
+                'text-anchor': 'start',
+                fill: GIT_DARK_COLOR,
+                'font-size': FONT_SIZE_DESC,
+                'class': 'tooltip tooltip-text'
+            });
         });
     };
 
-    // this.setProjectData = (conditionInfo) => {
-    //     // conditionInfo.descText
-    //     // conditionInfo.conditions[0].key
-    //     // conditionInfo.conditions[0].val
-    //     if (conditionInfo.conditions.length < 1) return thatKeyword.projectsData;
-    //     let extractedProject = {};
-    //     _.forEach(conditionInfo.conditions, function (condition) {
-    //         extractedProject = _.union(extractedProject, Util.extract(thatKeyword.projectsData, condition.key, condition.val));
-    //     });
-    //     console.log(extractedProject);
-    //     return extractedProject;
-    // };
-    // this.projectsData = this.setProjectData(prams.conditionInfo);
-    this.render({ project: this.projectsData });
+    render({ project: _.keys(projectsData) });
 }

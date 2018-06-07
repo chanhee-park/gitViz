@@ -19,14 +19,14 @@ $closeButton.click(function () {
 });
 
 let categorySelectZone = (fields) => {
-    this.selected = [];
+    let selected = [];
     let that = this;
     _.forEach(fields, function (field, fieldName) {
         let htmlStr = "<div class='field'>" +
             "<div class='field-name'>" + fieldName + "</div>" +
             "<div class='category-list'>";
         _.forEach(field.keywords, function (keyword) {
-            if(field.keywordCounts[keyword]>MINIMUM_CNT_OF_KEYWORD){
+            if (field.keywordCounts[keyword] > MINIMUM_CNT_OF_KEYWORD) {
                 selected.push(keyword);
                 htmlStr += "<div class='category selected'>" + keyword + "</div>";
             }
@@ -60,3 +60,4 @@ let categorySelectZone = (fields) => {
     })
 
 };
+

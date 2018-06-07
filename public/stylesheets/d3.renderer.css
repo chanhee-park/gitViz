@@ -11,12 +11,12 @@ svg#trendRenderer {
   width: 735px;
   height: 345px; }
 
-svg#projectRenderer {
+svg#keywordRankingRenderer {
   width: 730px;
   height: 530px; }
 
 .pie {
-  opacity: 0.3; }
+  opacity: 0.5; }
   .pie.selected {
     opacity: 1; }
 

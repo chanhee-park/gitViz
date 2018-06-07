@@ -6,20 +6,13 @@ block content
     script(src="/d3-selection-multi/build/d3-selection-multi.min.js")
     script(src="/jquery/dist/jquery.min.js")
     script(src="/lodash/lodash.min.js")
+    script(src="/babel-polyfill/dist/polyfill.min.js")
     //script(src="https://cdn.jsdelivr.net/npm/vue")
     link(rel='stylesheet' href='/stylesheets/layout.css')
     link(rel='stylesheet' href='/stylesheets/d3.renderer.css')
 
     .vis-comp-block-list
         .main-view
-            .button-wrapper.category-select-zone-open-button-wrapper
-                i.fas.fa-chevron-right.button#category-select-zone-open-button
-            .category-select-zone
-                .sub-title Select a category of interest
-                .button-wrapper.category-select-zone-close-button-wrapper
-                    i.fas.fa-chevron-left.button#category-select-zone-close-button
-                .field-list
-
             .userNetwork-view
                 .block-wrapper
                     .vis-comp-block.block
@@ -29,16 +22,16 @@ block content
                 .block-wrapper
                     .vis-comp-block.block
                         svg#trendRenderer
-            .project-view
+            .keyword-view
                 .block-wrapper
                     .vis-comp-block.block
-                        svg#projectRenderer
+                        svg#keywordRankingRenderer
 
     script(src="/data.js")
     script(src="/util.js")
     script(src="/Constants.js")
     script(src="/d3/util.d3.js")
-    script(src="/options.js")
+    //script(src="/options.js")
     script(src="/d3/userNetwork.d3.js")
     script(src="/d3/trend.d3.js")
     script(src="/d3/project.d3.js")
