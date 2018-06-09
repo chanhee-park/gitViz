@@ -3,29 +3,30 @@ const Data = new function () {
     this.USERS = {};
     this.LINKS = {};
     this.REPOSITORIES = {};
+    this.POSITION = {};
+    this.FIELD_OF_KEY = {};
 
     let that = this;
 
-    $.getJSON('../data/fields_final.json', function (data) {
-        that.FIELDS = data;
-        console.log('fields', that.FIELDS);
-    });
 
-    $.getJSON('../data/links_final.json', function (data) {
-        that.LINKS = data;
-        console.log('links', that.LINKS);
-    });
+    this.load = async function () {
+        that.FIELDS = await $.getJSON('../data/fields_final.json');
+        that.USERS = await $.getJSON('../data/users_final.json');
+        that.LINKS = await $.getJSON('../data/links_final.json');
+        that.REPOSITORIES = await $.getJSON('../data/repos_final.json');
+        that.POSITION = await $.getJSON('../data/position.json');
 
-    $.getJSON('../data/users_final.json', function (data) {
-        that.USERS = data;
-        console.log('users', that.USERS);
+        _.forEach(that.FIELDS, function (field, fieldName) {
+            _.forEach(field.keywords, function (keyword) {
+                that.FIELD_OF_KEY[keyword] = fieldName;
+            });
+        });
+
         userVis({ users: that.USERS, links: that.LINKS, fields: that.FIELDS });
-    });
-
-    $.getJSON('../data/repos_final.json', function (data) {
-        that.REPOSITORIES = data;
-        console.log('repos', that.REPOSITORIES);
         trendVis({ data: _.keys(that.REPOSITORIES), conditionInfo: { descText: 'ALL PROJECT' } });
-    });
+        keywordRankingVis({projectsData: _.keys(that.REPOSITORIES) });
+    };
 
 };
+
+Data.load();

@@ -51,7 +51,7 @@ const d3Util = new function () {
             // .attr("stroke", '#333')
             .attr("transform", "translate(" + cx + "," + cy + ")")
             .style("fill", function (d, i) {
-                return ['#aa736a', '#5A1', '#536099', '#A31', '#11aa7f', '#A2A', '#a1aa1e', '#9b6'][i];
+                return _.values(FIELD_COLORS)[i];
 
             })
             .attr('opacity', 1);

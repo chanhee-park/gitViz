@@ -2,7 +2,7 @@
 
 var userVis = function () {
     var _ref = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(param) {
-        var root, g, WIDTH, HEIGHT, RADVIZ_RADIUS, RADVIZ_CENTER_X, RADVIZ_CENTER_Y, userData, linkData, keys, keyField, attractors, dataPoints, links, selectedNodes, selectedKeywords, selectedLinks, update, Attractor, DataPoint, Link, save;
+        var root, WIDTH, HEIGHT, RADVIZ_RADIUS, RADVIZ_CENTER_X, RADVIZ_CENTER_Y, g, userData, linkData, keys, keyField, attractors, dataPoints, links, selectedNodes, selectedKeywords, selectedLinks, keywordCor, lineBasis, update, Attractor, DataPoint, Link, save;
         return regeneratorRuntime.wrap(function _callee$(_context) {
             while (1) {
                 switch (_context.prev = _context.next) {
@@ -30,25 +30,25 @@ var userVis = function () {
                                 if (start.x === 0 || end.x === 0 || start.y === 0 || end.y === 0) {
                                     return;
                                 }
+
                                 var lineG = g.append('line').attrs({
                                     x1: start.x,
                                     x2: end.x,
                                     y1: start.y,
                                     y2: end.y,
                                     stroke: COLOR_LINK,
-                                    opacity: UNSELECTED_OPACITY,
+                                    opacity: UNSELECTED_OPACITY / 2,
                                     'stroke-weight': '100px',
                                     'class': 'link'
                                 }).on("mouseover", function () {
                                     d3.select(this).style("cursor", "pointer");
                                 }).on('click', function () {
-                                    console.log('클릭 :', id);
                                     if (selectedLinks.indexOf(id) < 0) {
                                         selectedLinks.push(id);
                                         lineG.attr('opacity', 1);
                                     } else {
                                         selectedLinks.splice(selectedNodes.indexOf(id), 1);
-                                        lineG.attr('opacity', UNSELECTED_OPACITY);
+                                        lineG.attr('opacity', UNSELECTED_OPACITY / 2);
                                     }
                                     update();
                                 });
@@ -85,6 +85,7 @@ var userVis = function () {
                             };
 
                             this.coordinateX = function () {
+                                // return Data.POSITION[thatNode.user.id].x;
                                 return this.attractions.map(function (a) {
                                     return a.force * a.attractor.x;
                                 }).reduce(function (a, b) {
@@ -93,6 +94,7 @@ var userVis = function () {
                             };
 
                             this.coordinateY = function () {
+                                // return Data.POSITION[thatNode.user.id].y;
                                 return this.attractions.map(function (a) {
                                     return a.force * a.attractor.y;
                                 }).reduce(function (a, b) {
@@ -106,17 +108,17 @@ var userVis = function () {
                                 if (this.coordinate.x === 0 || this.coordinate.y === 0) {
                                     return;
                                 }
-                                var r = thatNode.user.stars / 10000;
+                                var r = Math.sqrt(thatNode.user.stars / 1000);
                                 if (r < 3) r = 3;
 
                                 var pieData = thatNode.getFieldScores();
-                                d3Util.drawPie(g, thatNode.user.id, pieData, thatNode.coordinate.x, thatNode.coordinate.y, r, "node");
+                                d3Util.drawPie(g, thatNode.user.id, pieData, thatNode.coordinate.x, thatNode.coordinate.y, r - 0.5, "node");
 
                                 // mouse event zone
                                 g.append('circle').attrs({
                                     cx: thatNode.coordinate.x,
                                     cy: thatNode.coordinate.y,
-                                    r: r,
+                                    r: r - 0.5,
                                     fill: '#fff',
                                     'class': 'node',
                                     'opacity': 0
@@ -138,7 +140,7 @@ var userVis = function () {
                             };
 
                             var addTooltip = function addTooltip(node) {
-                                var r = node.user.stars / 10000;
+                                var r = Math.sqrt(node.user.stars / 1000);
                                 var keywordKeys = _.keys(node.user.related_keyword);
 
                                 var x = node.coordinate.x + r + 20;
@@ -190,16 +192,20 @@ var userVis = function () {
                                     'class': 'tooltip tooltip-text'
                                 });
 
+                                var j = 0;
                                 _.forEach(keywordKeys, function (keywordKey, i) {
-                                    g.append('text').text(keywordKey).attrs({
-                                        x: x + 20 + i % 2 * 200,
-                                        y: y + 10 + FONT_SIZE_DESC * (5.5 + Math.floor(i / 2) * 1.5),
-                                        'alignment-baseline': 'hanging',
-                                        'text-anchor': 'start',
-                                        fill: FIELD_COLORS[keyField[keywordKey]],
-                                        'font-size': FONT_SIZE_DESC,
-                                        'class': 'tooltip tooltip-text'
-                                    });
+                                    if (keyField[keywordKey] !== undefined) {
+                                        g.append('text').text(keywordKey).attrs({
+                                            x: x + 20 + j % 2 * 200,
+                                            y: y + 10 + FONT_SIZE_DESC * (5.5 + Math.floor(j / 2) * 1.5),
+                                            'alignment-baseline': 'hanging',
+                                            'text-anchor': 'start',
+                                            fill: FIELD_COLORS[keyField[keywordKey]],
+                                            'font-size': FONT_SIZE_DESC,
+                                            'class': 'tooltip tooltip-text'
+                                        });
+                                        j++;
+                                    }
                                 });
                             };
                         };
@@ -215,33 +221,62 @@ var userVis = function () {
                             this.theta = theta;
                             var thatKeyword = this;
 
-                            var textX = RADVIZ_CENTER_X + Math.cos(theta) * (RADVIZ_RADIUS + 10);
+                            var textX = RADVIZ_CENTER_X + Math.cos(theta) * (RADVIZ_RADIUS + 5);
                             var textY = RADVIZ_CENTER_Y + Math.sin(theta) * (RADVIZ_RADIUS + 10);
 
                             var anchor = this.theta >= PI / 2 && this.theta <= 3 * PI / 2 ? 'end' : 'start';
+                            var align = this.theta >= PI / 2 && this.theta <= 3 * PI / 2 ? 'ideographic' : 'hanging';
                             var half = this.theta >= PI / 2 && this.theta <= 3 * PI / 2 ? 180 : 0;
 
                             this.render = function () {
-                                var texgG = g.append('text').text(_this.name).attrs({
+                                var keyH = Data.FIELDS[thatKeyword.field].keywordCounts[thatKeyword.name] / 4;
+                                if (_.isNaN(keyH)) keyH = 0;
+
+                                var rectG = g.append('rect').attrs({
                                     x: 0,
                                     y: 0,
-                                    'alignment-baseline': 'central',
+                                    width: keyH,
+                                    height: 2 * PI * RADVIZ_RADIUS / keys.length,
+                                    fill: FIELD_COLORS[_this.field],
+                                    transform: 'translate(' + _this.x + ',' + _this.y + ') rotate(' + Util.radians_to_degrees(theta) + ')',
+                                    'opacity': UNSELECTED_OPACITY
+                                }).on("mouseover", function () {
+                                    d3.select(this).style("cursor", "pointer");
+                                }).on('click', function () {
+                                    if (selectedKeywords.indexOf(thatKeyword.name) < 0) {
+                                        selectedKeywords.push(thatKeyword.name);
+                                        texgG.attr('opacity', 1);
+                                        rectG.attr('opacity', 1);
+                                    } else {
+                                        selectedKeywords.splice(selectedKeywords.indexOf(thatKeyword.name), 1);
+                                        texgG.attr('opacity', UNSELECTED_OPACITY);
+                                        rectG.attr('opacity', UNSELECTED_OPACITY);
+                                    }
+                                    update();
+                                });
+
+                                var texgG = g.append('text').text(_this.name).attrs({
+                                    x: _this.theta >= PI / 2 && _this.theta <= 3 * PI / 2 ? -keyH : keyH,
+                                    y: 0,
+                                    'alignment-baseline': align,
                                     'text-anchor': anchor,
                                     'fill': FIELD_COLORS[_this.field],
                                     'font-size': FONT_SIZE_AXIS,
                                     'transform': 'translate(' + textX + ',' + textY + ') rotate(' + (Util.radians_to_degrees(theta) - half) + ')',
                                     'opacity': UNSELECTED_OPACITY,
-                                    'casss': 'keyword-text'
+                                    'cass': 'keyword-text',
+                                    'id': 'keyword-' + _this.name
                                 }).on("mouseover", function () {
                                     d3.select(this).style("cursor", "pointer");
                                 }).on('click', function () {
-                                    console.log('클릭 :', thatKeyword.name);
                                     if (selectedKeywords.indexOf(thatKeyword.name) < 0) {
                                         selectedKeywords.push(thatKeyword.name);
                                         texgG.attr('opacity', 1);
+                                        rectG.attr('opacity', 1);
                                     } else {
                                         selectedKeywords.splice(selectedKeywords.indexOf(thatKeyword.name), 1);
                                         texgG.attr('opacity', UNSELECTED_OPACITY);
+                                        rectG.attr('opacity', UNSELECTED_OPACITY);
                                     }
                                     update();
                                 });
@@ -252,22 +287,17 @@ var userVis = function () {
                                     stroke: COLOR_AXIS,
                                     'stroke-weight': '1px',
                                     'opacity': UNSELECTED_OPACITY / 2,
-                                    'transform': 'translate(' + _this.x + ',' + _this.y + ') rotate(' + (Util.radians_to_degrees(theta) - half) + ')'
+                                    'transform': 'translate(' + _this.x + ',' + _this.y + ') rotate(' + Util.radians_to_degrees(theta) + ')'
                                 });
                                 return thatKeyword;
                             };
                         };
 
                         update = function update() {
-                            console.log("선택된 아이들 : ", selectedNodes);
-                            console.log("선택된 키워드들 : ", selectedKeywords);
-                            console.log("선택된 링크들 : ", selectedLinks);
-
                             // 선택된 키워드 및 링크를 통해 유저 자동 선택
                             _.forEach(selectedKeywords, function (selected) {
                                 _.forEach(Data.REPOSITORIES, function (repo) {
                                     if (repo.keywords.indexOf(selected) >= 0) {
-                                        console.log(repo.name);
                                         selectedNodes.push(repo['owner_id']);
                                         selectedNodes.concat(_.keys(repo.users));
                                     }
@@ -287,7 +317,7 @@ var userVis = function () {
                             // 프로젝트 필터
                             var projects = [];
                             _.forEach(selectedNodes, function (selected) {
-                                projects = projects.concat(Data.USERS[selected].projects);
+                                if (Data.USERS.hasOwnProperty(selected)) projects = projects.concat(Data.USERS[selected].projects);
                             });
                             _.forEach(selectedKeywords, function (selected) {
                                 _.forEach(Data.REPOSITORIES, function (repo) {
@@ -300,26 +330,20 @@ var userVis = function () {
                                 projects = projects.concat(Data.LINKS[selected].projects);
                             });
                             _.uniq(projects);
-                            console.log("project", projects);
 
                             d3.select('#trendRenderer > *').remove();
                             trendVis({ data: projects, conditionInfo: { descText: 'ALL PROJECT' } });
-
-                            // trendVis({
-                            //     conditionInfo: {
-                            //         descText: 'IS USER ' + user.name + '?',
-                            //
-                            //     }
-                            // });
+                            d3.select('#keywordRankingRenderer > *').remove();
+                            keywordRankingVis({ projectsData: projects });
                         };
 
                         root = d3.select('#userNetworkRenderer');
-                        g = root.append('g');
-                        WIDTH = 1100;
-                        HEIGHT = 890;
-                        RADVIZ_RADIUS = 335;
+                        WIDTH = 1180;
+                        HEIGHT = 1030;
+                        RADVIZ_RADIUS = 430;
                         RADVIZ_CENTER_X = WIDTH / 2;
                         RADVIZ_CENTER_Y = (HEIGHT - 20) / 2;
+                        g = root.append('g').attr("transform", "translate(55,40) scale(0.9)");
                         userData = param.users;
                         linkData = param.links;
                         keys = [];
@@ -333,6 +357,7 @@ var userVis = function () {
                         selectedNodes = [];
                         selectedKeywords = [];
                         selectedLinks = [];
+                        keywordCor = {};
 
 
                         _.forEach(param.fields, function (field, fieldName) {
@@ -341,6 +366,12 @@ var userVis = function () {
                                 keyField[keyword] = fieldName;
                             });
                         });
+
+                        lineBasis = d3.line().x(function (d) {
+                            return d.x;
+                        }).y(function (d) {
+                            return d.y;
+                        }).curve(d3.curveBasis); // curveBasis
 
                         // radviz 외부 원
                         g.append('circle').attrs({
@@ -367,14 +398,81 @@ var userVis = function () {
                             });
                             dataPoints.push(new DataPoint(attractions, user));
                         });
-                        // 노드간 링크 생성
+
+                        // 노드간 링크 생성 // 태양신 데이터 생성
                         _.forEach(linkData, function (link) {
                             links.push(new Link(link));
+
+                            // 태양신 데이터 생성
+                            _.forEach(link.projects, function (project) {
+                                var temp_keywords = [];
+                                if (Data.REPOSITORIES[project] !== undefined && Data.REPOSITORIES[project].hasOwnProperty('keywords')) {
+                                    temp_keywords = Util.extractSortedArray(Data.REPOSITORIES[project].keywords);
+                                }
+                                _.forEach(temp_keywords, function (from) {
+                                    _.forEach(temp_keywords, function (to) {
+                                        if (from !== to) {
+                                            if (keywordCor[from] === undefined) keywordCor[from] = {};
+                                            if (keywordCor[from][to] === undefined) keywordCor[from][to] = 0;
+                                            keywordCor[from][to]++;
+                                        }
+                                    });
+                                });
+                            });
                         });
 
                         // 링크 그리기
-                        _.forEach(links, function (link) {
-                            link.render();
+                        // _.forEach(links, function (link) {
+                        //     link.render();
+                        // });
+
+                        // 태양신 그리기
+                        console.log(keywordCor);
+                        _.forEach(keywordCor, function (eachKeywordCor, from) {
+                            _.forEach(eachKeywordCor, function (cor, to) {
+                                if (cor > 10 && from > to) {
+                                    _.forEach(attractors, function (attractorA) {
+                                        _.forEach(attractors, function (attractorB) {
+                                            if (attractorA.name === from && attractorB.name === to) {
+                                                var lineData = [];
+                                                lineData.push({ x: attractorA.x - 0.1, y: attractorA.y });
+                                                lineData.push({ x: attractorA.x, y: attractorA.y });
+                                                lineData.push({ x: attractorA.x + 0.1, y: attractorA.y });
+                                                var thetaDiff = attractorA.theta - attractorB.theta;
+                                                console.log(from, to);
+                                                console.log(attractorA);
+                                                console.log(attractorB);
+                                                console.log(Util.radians_to_degrees(thetaDiff));
+                                                // if (Util.radians_to_degrees(thetaDiff) < 30) {
+                                                //     let theta = attractorA.theta - (thetaDiff);
+                                                //     let mid_x = RADVIZ_CENTER_X + Math.cos(theta) * (RADVIZ_RADIUS + 200);
+                                                //     let mid_y = RADVIZ_CENTER_Y + Math.sin(theta) * (RADVIZ_RADIUS + 200);
+                                                //     lineData.push(({ x: mid_x, y: mid_y }));
+                                                // } else {
+                                                //     console.log(Util.radians_to_degrees(thetaDiff), Math.ceil(Util.radians_to_degrees(thetaDiff) / 15));
+                                                //     for (let i = 0; i < 100; i++) {
+                                                // let theta = attractorA.theta - (thetaDiff) * i / 100 / 2;
+                                                // let mid_x = RADVIZ_CENTER_X + Math.cos(theta) * (RADVIZ_RADIUS + 2 * (100 - Math.abs(i - 50)) );
+                                                // let mid_y = RADVIZ_CENTER_Y + Math.sin(theta) * (RADVIZ_RADIUS + 2 * (100 - Math.abs(i - 50)));
+                                                // lineData.push(({ x: mid_x, y: mid_y }));
+                                                // }
+                                                // }
+                                                lineData.push({ x: attractorB.x - 0.1, y: attractorB.y });
+                                                lineData.push({ x: attractorB.x, y: attractorB.y });
+                                                lineData.push({ x: attractorB.x + 0.1, y: attractorB.y });
+                                                // console.log(lineData);
+                                                g.append("path").attr("d", lineBasis(lineData)).attrs({
+                                                    fill: 'none',
+                                                    stroke: '#E179C1',
+                                                    opacity: 1,
+                                                    // opacity: UNSELECTED_OPACITY/2,
+                                                    'stroke-width': cor / 2
+                                                });
+                                            }
+                                        });
+                                    });
+                                }
+                            });
                         });
 
                         // radviz 내부 노드 그리기
@@ -405,7 +503,7 @@ var userVis = function () {
                         // download('circles2.json', JSON.stringify(save));
                         //
 
-                    case 29:
+                    case 32:
                     case 'end':
                         return _context.stop();
                 }

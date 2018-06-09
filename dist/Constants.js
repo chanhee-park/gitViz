@@ -15,13 +15,13 @@ var FONT_SIZE_AXIS = 12;
 var FONT_SIZE_DESC = 14;
 
 var FIELD_COLORS = {
-    'graphics': '#aa736a',
-    'mobile': '#5A1',
-    'web': '#536099',
-    'visualization': '#A31',
-    'ML': '#11aa7f',
-    'db': '#A2A',
-    'Network': '#a1aa1e',
-    'OS': '#9b6'
+    'mobile': '#BCBC35',
+    'web': '#2678B2',
+    'visualization': '#FD7F28',
+    'ML': '#339E34',
+    'db': '#9369BB',
+    'Network': '#8B564C',
+    'OS': '#bb85a5',
+    'graphics': '#29BECE'
 };
 var UNSELECTED_OPACITY = 0.5;

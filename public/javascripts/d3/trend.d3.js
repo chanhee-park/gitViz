@@ -2,8 +2,8 @@ function trendVis(params) {
     const root = d3.select('#trendRenderer');
     const g = root.append('g');
 
-    const WIDTH = 735;
-    const HEIGHT = 345;
+    const WIDTH = 667;
+    const HEIGHT = 300;
     const PADDING_LEFT = 80;
     const PADDING_RIGHT = 40;
     const PADDING_TOP = 40;
@@ -149,10 +149,9 @@ function trendVis(params) {
                     d3.select(this).attr('opacity', UNSELECTED_OPACITY + 0.2);
                     d3.selectAll('.tooltip').remove();
                 })
-                .on('click', function () {
-                    d3.selectAll('#keywordRankingRenderer > *').remove();
-                    keywordRankingVis({ fieldName: fieldName, projectsData: projectsData });
-                });
+                // .on('click', function () {
+                //
+                // });
             preStacked = _.clone(stacked);
         });
     };

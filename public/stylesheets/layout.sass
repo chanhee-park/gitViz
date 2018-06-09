@@ -8,14 +8,14 @@
 .vis-comp-block-list
   width: 100%
   margin: auto
-  height: $display-height - $title-box-height
+  height: $display-height - $title-box-height + 150
   min-height: 500px
   display: flex
 
   .main-view
     height: 100%
     position: relative
-    flex: 6
+    flex: 7
     .category-select-zone-open-button-wrapper
       position: absolute
       top: 20px
@@ -73,9 +73,11 @@
     height: 100%
     flex: 4
     .trend-view
-      height: 40%
+      height: 30%
     .keyword-view
-      height: 60%
+      height: 40%
+    .project-list-view
+      height: 30%
 
 .button-wrapper
   @include button-wrapper()

@@ -5,13 +5,13 @@
 .vis-comp-block-list {
   width: 100%;
   margin: auto;
-  height: 915px;
+  height: 1065px;
   min-height: 500px;
   display: flex; }
   .vis-comp-block-list .main-view {
     height: 100%;
     position: relative;
-    flex: 6; }
+    flex: 7; }
     .vis-comp-block-list .main-view .category-select-zone-open-button-wrapper {
       position: absolute;
       top: 20px;
@@ -67,9 +67,11 @@
     height: 100%;
     flex: 4; }
     .vis-comp-block-list .sub-view .trend-view {
-      height: 40%; }
+      height: 30%; }
     .vis-comp-block-list .sub-view .keyword-view {
-      height: 60%; }
+      height: 40%; }
+    .vis-comp-block-list .sub-view .project-list-view {
+      height: 30%; }
 
 .button-wrapper {
   width: 50px;
