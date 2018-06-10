@@ -15,9 +15,84 @@ svg#keywordRankingRenderer {
   width: 667px;
   height: 400px; }
 
+.project-list.block {
+  width: 667px;
+  height: 300px;
+  padding: 30px;
+  overflow-y: scroll; }
+  .project-list.block .project {
+    border-bottom: 1px solid #efefef;
+    padding-bottom: 10px;
+    margin-bottom: 20px;
+    color: #586069;
+    font-size: 14px; }
+    .project-list.block .project .main-info {
+      width: 100%;
+      display: flex;
+      font-size: 28px;
+      font-weight: 600; }
+      .project-list.block .project .main-info .project-name {
+        flex: 7;
+        display: inline-block;
+        float: left; }
+      .project-list.block .project .main-info .project-field {
+        flex: 3;
+        display: inline-block;
+        text-align: right;
+        padding-right: 10px;
+        color: #2678B2; }
+        .project-list.block .project .main-info .project-field.mobile {
+          color: #BCBC35; }
+        .project-list.block .project .main-info .project-field.web {
+          color: #2678B2; }
+        .project-list.block .project .main-info .project-field.visualization {
+          color: #FD7F28; }
+        .project-list.block .project .main-info .project-field.ML {
+          color: #339E34; }
+        .project-list.block .project .main-info .project-field.db {
+          color: #9369BB; }
+        .project-list.block .project .main-info .project-field.Network {
+          color: #8B564C; }
+        .project-list.block .project .main-info .project-field.OS {
+          color: #bb85a5; }
+        .project-list.block .project .main-info .project-field.graphics {
+          color: #29BECE; }
+    .project-list.block .project .project-description {
+      padding: 10px 3px; }
+    .project-list.block .project .project-keyword-list {
+      width: 100%;
+      display: block;
+      padding: 5px 0; }
+      .project-list.block .project .project-keyword-list .keyword {
+        display: inline-block;
+        padding: 5px 8px;
+        margin: 5px;
+        border-radius: 15px;
+        background-color: #2678B2;
+        color: white;
+        font-weight: 100; }
+        .project-list.block .project .project-keyword-list .keyword.mobile {
+          background-color: #BCBC35; }
+        .project-list.block .project .project-keyword-list .keyword.web {
+          background-color: #2678B2; }
+        .project-list.block .project .project-keyword-list .keyword.visualization {
+          background-color: #FD7F28; }
+        .project-list.block .project .project-keyword-list .keyword.ML {
+          background-color: #339E34; }
+        .project-list.block .project .project-keyword-list .keyword.db {
+          background-color: #9369BB; }
+        .project-list.block .project .project-keyword-list .keyword.Network {
+          background-color: #8B564C; }
+        .project-list.block .project .project-keyword-list .keyword.OS {
+          background-color: #bb85a5; }
+        .project-list.block .project .project-keyword-list .keyword.graphics {
+          background-color: #29BECE; }
+
 .pie {
   opacity: 0.3; }
   .pie.selected {
+    opacity: 1; }
+  .pie.unselectedAll {
     opacity: 1; }
 
 /*# sourceMappingURL=d3.renderer.css.map */

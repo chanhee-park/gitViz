@@ -3,12 +3,12 @@ async function userVis(param) {
 
     const WIDTH = 1180;
     const HEIGHT = 1030;
-    const RADVIZ_RADIUS = 430;
+    const RADVIZ_RADIUS = 443;
     const RADVIZ_CENTER_X = WIDTH / 2;
     const RADVIZ_CENTER_Y = (HEIGHT - 20) / 2;
 
     const g = root.append('g')
-        .attr("transform", "translate(55,40) scale(0.9)");
+        .attr("transform", "translate(55,40) scale(0.89)");
 
     const userData = param.users;
     const linkData = param.links;
@@ -61,6 +61,16 @@ async function userVis(param) {
             d3.selectAll('#pie' + dataPoint.user.id).classed('selected', selectedNodes.indexOf(dataPoint.user.id) >= 0)
         });
 
+        // 아무도 선택 안되었으면 모두 선택한 것과 같은 효과를 적용한다.
+        d3.selectAll('.pie').classed('unselectedAll', selectedNodes.length === 0);
+        if (selectedNodes.length === 0) {
+            d3.select('#trendRenderer > *').remove();
+            d3.select('#keywordRankingRenderer > *').remove();
+            trendVis({ data: _.keys(Data.REPOSITORIES), conditionInfo: { descText: 'ALL PROJECT' } });
+            keywordRankingVis({ projectsData: _.keys(Data.REPOSITORIES) });
+            return;
+        }
+
         // 프로젝트 필터
         let projects = [];
         _.forEach(selectedNodes, function (selected) {
@@ -85,8 +95,6 @@ async function userVis(param) {
     }
 
     function Attractor(name, theta) {
-
-        // theta = theta - 90;
         this.name = name;
         this.field = keyField[name];
         this.x = RADVIZ_CENTER_X + Math.cos(theta) * RADVIZ_RADIUS;
@@ -104,7 +112,7 @@ async function userVis(param) {
         this.render = () => {
             let keyH = (Data.FIELDS[thatKeyword.field].keywordCounts[thatKeyword.name]) / 4;
             if (_.isNaN(keyH)) keyH = 0;
-
+            // keyH = 0;
             let rectG = g.append('rect').attrs({
                 x: 0,
                 y: 0,
@@ -171,6 +179,90 @@ async function userVis(param) {
         }
     }
 
+    function drawKeywordLink(fromKeyword) {
+        let eachKeywordCor = fromKeyword.eachKeywordCor;
+        let from = fromKeyword.keywordName;
+        _.forEach(eachKeywordCor, function (cor, to) {
+            if (cor > 0) {
+                _.forEach(attractors, function (attractorA) {
+                    _.forEach(attractors, function (attractorB) {
+                        if (attractorA.name === from && attractorB.name === to && attractorA.theta < attractorB.theta) {
+                            let thetaDiff = attractorB.theta - attractorA.theta;
+                            let lineData = [];
+                            if (Util.radians_to_degrees(thetaDiff) > 180) {
+                                lineData.push(({ x: attractorB.x - 0.1, y: attractorB.y }));
+                                lineData.push(({ x: attractorB.x, y: attractorB.y }));
+                                lineData.push(({ x: attractorB.x + 0.1, y: attractorB.y }));
+                                thetaDiff = 2 * PI - attractorB.theta + attractorA.theta;
+                                if (Util.radians_to_degrees(thetaDiff) < 10) {
+                                    let theta = attractorB.theta + (thetaDiff / 2);
+                                    let mid_x = RADVIZ_CENTER_X + Math.cos(theta) * (RADVIZ_RADIUS + 200);
+                                    let mid_y = RADVIZ_CENTER_Y + Math.sin(theta) * (RADVIZ_RADIUS + 200);
+                                    lineData.push(({ x: mid_x, y: mid_y }));
+                                } else {
+                                    let maxIter = Math.ceil(Util.radians_to_degrees(thetaDiff) / 15);
+                                    for (let i = 1; i < maxIter; i++) {
+                                        let theta = attractorB.theta + (thetaDiff * i / maxIter);
+                                        theta = theta > 2 * PI ? theta - 2 * PI : theta;
+                                        let addedR = 300;
+                                        if (i < maxIter / 2) {
+                                            addedR = 300 * i / maxIter;
+                                        } else {
+                                            addedR = 300 - (300 * i / maxIter);
+                                        }
+                                        let mid_x = RADVIZ_CENTER_X + Math.cos(theta) * (RADVIZ_RADIUS + addedR);
+                                        let mid_y = RADVIZ_CENTER_Y + Math.sin(theta) * (RADVIZ_RADIUS + addedR);
+                                        lineData.push(({ x: mid_x, y: mid_y }));
+                                    }
+                                }
+
+                                lineData.push(({ x: attractorA.x - 0.1, y: attractorA.y }));
+                                lineData.push(({ x: attractorA.x, y: attractorA.y }));
+                                lineData.push(({ x: attractorA.x + 0.1, y: attractorA.y }));
+                            } else {
+                                lineData.push(({ x: attractorA.x - 0.1, y: attractorA.y }));
+                                lineData.push(({ x: attractorA.x, y: attractorA.y }));
+                                lineData.push(({ x: attractorA.x + 0.1, y: attractorA.y }));
+                                if (Util.radians_to_degrees(thetaDiff) < 10) {
+                                    let theta = attractorA.theta + (thetaDiff / 2);
+                                    let mid_x = RADVIZ_CENTER_X + Math.cos(theta) * (RADVIZ_RADIUS + 200);
+                                    let mid_y = RADVIZ_CENTER_Y + Math.sin(theta) * (RADVIZ_RADIUS + 200);
+                                    lineData.push(({ x: mid_x, y: mid_y }));
+                                } else {
+                                    let maxIter = Math.ceil(Util.radians_to_degrees(thetaDiff) / 15);
+                                    for (let i = 1; i < maxIter; i++) {
+                                        let theta = attractorA.theta + (thetaDiff * i / maxIter);
+                                        let addedR = 300;
+                                        if (i < maxIter / 2) {
+                                            addedR = 300 * i / maxIter;
+                                        } else {
+                                            addedR = 300 - (300 * i / maxIter);
+                                        }
+                                        let mid_x = RADVIZ_CENTER_X + Math.cos(theta) * (RADVIZ_RADIUS + addedR);
+                                        let mid_y = RADVIZ_CENTER_Y + Math.sin(theta) * (RADVIZ_RADIUS + addedR);
+                                        lineData.push(({ x: mid_x, y: mid_y }));
+                                    }
+                                }
+
+                                lineData.push(({ x: attractorB.x - 0.1, y: attractorB.y }));
+                                lineData.push(({ x: attractorB.x, y: attractorB.y }));
+                                lineData.push(({ x: attractorB.x + 0.1, y: attractorB.y }));
+                            }
+                            g.append("path")
+                                .attr("d", lineBasis(lineData))
+                                .attrs({
+                                    fill: 'none',
+                                    stroke: '#D4626C',
+                                    opacity: UNSELECTED_OPACITY / 2,
+                                    'stroke-width': cor,
+                                });
+                        }
+                    });
+                });
+            }
+        });
+    }
+
     function DataPoint(attractions, user) {
         this.attractions = attractions;
         this.user = user;
@@ -201,7 +293,7 @@ async function userVis(param) {
         };
 
         this.coordinateX = function () {
-            // return Data.POSITION[thatNode.user.id].x;
+            return Data.POSITION[thatNode.user.id].x;
             return this.attractions.map(function (a) {
                 return a.force * a.attractor.x
             }).reduce(function (a, b) {
@@ -210,7 +302,7 @@ async function userVis(param) {
         };
 
         this.coordinateY = function () {
-            // return Data.POSITION[thatNode.user.id].y;
+            return Data.POSITION[thatNode.user.id].y;
             return this.attractions.map(function (a) {
                 return a.force * a.attractor.y
             }).reduce(function (a, b) {
@@ -221,10 +313,10 @@ async function userVis(param) {
         this.coordinate = { x: this.coordinateX(), y: this.coordinateY() };
 
         this.render = function () {
-            if (this.coordinate.x === 0 || this.coordinate.y === 0) {
+            if (this.coordinate.x === null || this.coordinate.y === null || this.coordinate.x === 0 || this.coordinate.y === 0) {
                 return;
             }
-            let r = Math.sqrt((thatNode.user.stars) / 1000);
+            let r = Math.sqrt((thatNode.user.stars) / 800);
             if (r < 3) r = 3;
 
             let pieData = thatNode.getFieldScores();
@@ -257,7 +349,7 @@ async function userVis(param) {
         };
 
         let addTooltip = (node) => {
-            let r = Math.sqrt((node.user.stars) / 1000);
+            let r = Math.sqrt((node.user.stars) / 800);
             let keywordKeys = _.keys(node.user.related_keyword);
 
             let x = node.coordinate.x + r + 20;
@@ -398,7 +490,7 @@ async function userVis(param) {
     // radviz 외부 축
     _.forEach(keys, function (key, i) {
         let theta = (2 * PI) * (i / keys.length); // 0 ~ 2*PI
-        attractors.push(new Attractor(key, theta).render());
+        attractors.push(new Attractor(key, theta));
     });
 
     // radviz 내부 노드 생성
@@ -440,67 +532,27 @@ async function userVis(param) {
     // });
 
     // 태양신 그리기
-    console.log(keywordCor);
     _.forEach(keywordCor, function (eachKeywordCor, from) {
-        _.forEach(eachKeywordCor, function (cor, to) {
-            if (cor > 10 && from > to) {
-                _.forEach(attractors, function (attractorA) {
-                    _.forEach(attractors, function (attractorB) {
-                        if (attractorA.name === from && attractorB.name === to) {
-                            let lineData = [];
-                            lineData.push(({ x: attractorA.x - 0.1, y: attractorA.y }));
-                            lineData.push(({ x: attractorA.x, y: attractorA.y }));
-                            lineData.push(({ x: attractorA.x + 0.1, y: attractorA.y }));
-                            let thetaDiff = attractorA.theta - attractorB.theta;
-                            console.log(from, to);
-                            console.log(attractorA);
-                            console.log(attractorB);
-                            console.log(Util.radians_to_degrees(thetaDiff));
-                            // if (Util.radians_to_degrees(thetaDiff) < 30) {
-                            //     let theta = attractorA.theta - (thetaDiff);
-                            //     let mid_x = RADVIZ_CENTER_X + Math.cos(theta) * (RADVIZ_RADIUS + 200);
-                            //     let mid_y = RADVIZ_CENTER_Y + Math.sin(theta) * (RADVIZ_RADIUS + 200);
-                            //     lineData.push(({ x: mid_x, y: mid_y }));
-                            // } else {
-                            //     console.log(Util.radians_to_degrees(thetaDiff), Math.ceil(Util.radians_to_degrees(thetaDiff) / 15));
-                            //     for (let i = 0; i < 100; i++) {
-                            // let theta = attractorA.theta - (thetaDiff) * i / 100 / 2;
-                            // let mid_x = RADVIZ_CENTER_X + Math.cos(theta) * (RADVIZ_RADIUS + 2 * (100 - Math.abs(i - 50)) );
-                            // let mid_y = RADVIZ_CENTER_Y + Math.sin(theta) * (RADVIZ_RADIUS + 2 * (100 - Math.abs(i - 50)));
-                            // lineData.push(({ x: mid_x, y: mid_y }));
-                            // }
-                            // }
-                            lineData.push(({ x: attractorB.x - 0.1, y: attractorB.y }));
-                            lineData.push(({ x: attractorB.x, y: attractorB.y }));
-                            lineData.push(({ x: attractorB.x + 0.1, y: attractorB.y }));
-                            // console.log(lineData);
-                            g.append("path")
-                                .attr("d", lineBasis(lineData))
-                                .attrs({
-                                    fill: 'none',
-                                    stroke: '#E179C1',
-                                    opacity: 1,
-                                    // opacity: UNSELECTED_OPACITY/2,
-                                    'stroke-width': cor / 2,
-                                });
-                        }
-                    });
-                });
-            }
-        });
+        drawKeywordLink({ eachKeywordCor: eachKeywordCor, keywordName: from })
+    });
+
+    // radviz 외부 축 그리기
+    _.forEach(attractors, function (attractor, i) {
+        attractor.render();
     });
 
     // radviz 내부 노드 그리기
-    let save = {};
+    // let save = {};
     _.forEach(dataPoints, function (dataPoint) {
         dataPoint.render();
-        let x = dataPoint.coordinateX();
-        let y = dataPoint.coordinateY();
-        let r = dataPoint.user.stars / 10000;
-
-        save[dataPoint.user.id] = { id: dataPoint.user.id, x: x, y: y, r: r };
+        // let x = dataPoint.coordinateX();
+        // let y = dataPoint.coordinateY();
+        // let r = Math.sqrt((dataPoint.user.stars) / 800);
+        // save[dataPoint.user.id] = { id: dataPoint.user.id, x: x, y: y, r: r };
     });
-    //
+    d3.selectAll('.pie').classed('unselectedAll', selectedNodes.length === 0);
+
+
     // function download(filename, text) {
     //     var element = document.createElement('a');
     //     element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
@@ -514,6 +566,6 @@ async function userVis(param) {
     //     document.body.removeChild(element);
     // }
     //
-    // download('circles2.json', JSON.stringify(save));
-    //
+    // download('circles3.json', JSON.stringify(save));
+
 }

@@ -142,6 +142,7 @@ function trendVis(params) {
                     'stroke-width': 2,
                 })
                 .on('mouseover', function () {
+                    d3.select(this).style("cursor", "pointer");
                     d3.select(this).attr('opacity', 1);
                     addTooltip(d3.mouse(this)[0], d3.mouse(this)[1], fieldName);
                 })
@@ -149,9 +150,13 @@ function trendVis(params) {
                     d3.select(this).attr('opacity', UNSELECTED_OPACITY + 0.2);
                     d3.selectAll('.tooltip').remove();
                 })
-                // .on('click', function () {
-                //
-                // });
+                .on('click', function () {
+                    let selectedProject = [];
+                    _.forEach(projectsData, function (project) {
+                        if (project.field === fieldName) selectedProject.push(project.id);
+                    });
+                    projectsVis({ projects: selectedProject });
+                });
             preStacked = _.clone(stacked);
         });
     };

@@ -1,3 +1,5 @@
+@import "variable"
+
 svg
   display: block
   margin: auto
@@ -52,7 +54,82 @@ svg#keywordRankingRenderer
   width: 667px
   height: 400px
 
+.project-list.block
+  width: 667px
+  height: 300px
+  padding: 30px
+  overflow-y: scroll
+  .project
+    border-bottom: 1px solid $html-bg-color
+    padding-bottom: 10px
+    margin-bottom: 20px
+    color: $git-desc-text-color
+    font-size: $desc-font-size
+    .main-info
+      width: 100%
+      display: flex
+      font-size: $desc-font-size * 2
+      font-weight: 600
+      .project-name
+        flex: 7
+        display: inline-block
+        float: left
+      .project-field
+        flex: 3
+        display: inline-block
+        text-align: right
+        padding-right: 10px
+        color: #2678B2
+        &.mobile
+          color: #BCBC35
+        &.web
+          color: #2678B2
+        &.visualization
+          color: #FD7F28
+        &.ML
+          color: #339E34
+        &.db
+          color: #9369BB
+        &.Network
+          color: #8B564C
+        &.OS
+          color: #bb85a5
+        &.graphics
+          color: #29BECE
+    .project-description
+      padding: 10px 3px
+    .project-keyword-list
+      width: 100%
+      display: block
+      padding: 5px 0
+      .keyword
+        display: inline-block
+        padding: 5px 8px
+        margin: 5px
+        border-radius: 15px
+        background-color: #2678B2
+        color: white
+        font-weight: 100
+        &.mobile
+          background-color: #BCBC35
+        &.web
+          background-color: #2678B2
+        &.visualization
+          background-color: #FD7F28
+        &.ML
+          background-color: #339E34
+        &.db
+          background-color: #9369BB
+        &.Network
+          background-color: #8B564C
+        &.OS
+          background-color: #bb85a5
+        &.graphics
+          background-color: #29BECE
+
 .pie
   opacity: 0.3
   &.selected
+    opacity: 1
+  &.unselectedAll
     opacity: 1

@@ -15,18 +15,12 @@ body
   height: $display-height
 
 a
-  color: $git-a-color
-  &:visited
-    color: $git-a-color
-
-a.name, a.repo
   color: black
   font-weight: 600
+  &:visited
+    color: black
   &:hover
     color: $git-a-color
-
-a.repo:hover
-  border-bottom: 2px solid $git-a-color
 
 .font-title
   font-size: $title-font-size

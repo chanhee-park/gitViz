@@ -175,6 +175,10 @@ function keywordRankingVis(params) {
                                 stroke: FIELD_COLORS[Data.FIELD_OF_KEY[keyword]],
                                 opacity: UNSELECTED_OPACITY + 0.2,
                                 'stroke-width': 3,
+                            }).on('mouseover', function () {
+                                d3.select(this).style("cursor", "pointer");
+                            }).on('click', function () {
+                                showProjectsData(keyword);
                             });
                     }
                     keywordAppear[keyword] = false;
@@ -189,6 +193,12 @@ function keywordRankingVis(params) {
                         stroke: FIELD_COLORS[Data.FIELD_OF_KEY[keyword]],
                         opacity: UNSELECTED_OPACITY + 0.2,
                         'stroke-width': 3,
+                    })
+                    .on('mouseover', function () {
+                        d3.select(this).style("cursor", "pointer");
+                    })
+                    .on('click', function () {
+                        showProjectsData(keyword);
                     });
             }
             _.forEach(circleData, function (circle) {
@@ -201,12 +211,28 @@ function keywordRankingVis(params) {
                         stroke: circle.color,
                         'stroke-width': 3,
                         'class': 'node',
+                    })
+                    .on('mouseover', function () {
+                        d3.select(this).style("cursor", "pointer");
+                    })
+                    .on('click', function () {
+                        showProjectsData(keyword);
                     });
             })
 
         });
 
     };
+
+    function showProjectsData(keyword) {
+        let selectedProject = [];
+        _.forEach(projectsData, function (project) {
+            if (Data.REPOSITORIES[project].keywords.indexOf(keyword) >= 0) selectedProject.push(project);
+        });
+        selectedProject = _.uniq(selectedProject);
+        console.log(selectedProject);
+        projectsVis({ projects: selectedProject })
+    }
 
     // 키워드 추출
     let keywordsByYears = getRankingData(projectsData);

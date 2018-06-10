@@ -12,18 +12,12 @@ body {
   height: 980px; }
 
 a {
-  color: #0366d6; }
-  a:visited {
-    color: #0366d6; }
-
-a.name, a.repo {
   color: black;
   font-weight: 600; }
-  a.name:hover, a.repo:hover {
+  a:visited {
+    color: black; }
+  a:hover {
     color: #0366d6; }
-
-a.repo:hover {
-  border-bottom: 2px solid #0366d6; }
 
 .font-title {
   font-size: 28px;

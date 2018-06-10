@@ -2,7 +2,7 @@
 
 var userVis = function () {
     var _ref = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(param) {
-        var root, WIDTH, HEIGHT, RADVIZ_RADIUS, RADVIZ_CENTER_X, RADVIZ_CENTER_Y, g, userData, linkData, keys, keyField, attractors, dataPoints, links, selectedNodes, selectedKeywords, selectedLinks, keywordCor, lineBasis, update, Attractor, DataPoint, Link, save;
+        var root, WIDTH, HEIGHT, RADVIZ_RADIUS, RADVIZ_CENTER_X, RADVIZ_CENTER_Y, g, userData, linkData, keys, keyField, attractors, dataPoints, links, selectedNodes, selectedKeywords, selectedLinks, keywordCor, lineBasis, update, Attractor, drawKeywordLink, DataPoint, Link;
         return regeneratorRuntime.wrap(function _callee$(_context) {
             while (1) {
                 switch (_context.prev = _context.next) {
@@ -85,7 +85,7 @@ var userVis = function () {
                             };
 
                             this.coordinateX = function () {
-                                // return Data.POSITION[thatNode.user.id].x;
+                                return Data.POSITION[thatNode.user.id].x;
                                 return this.attractions.map(function (a) {
                                     return a.force * a.attractor.x;
                                 }).reduce(function (a, b) {
@@ -94,7 +94,7 @@ var userVis = function () {
                             };
 
                             this.coordinateY = function () {
-                                // return Data.POSITION[thatNode.user.id].y;
+                                return Data.POSITION[thatNode.user.id].y;
                                 return this.attractions.map(function (a) {
                                     return a.force * a.attractor.y;
                                 }).reduce(function (a, b) {
@@ -105,10 +105,10 @@ var userVis = function () {
                             this.coordinate = { x: this.coordinateX(), y: this.coordinateY() };
 
                             this.render = function () {
-                                if (this.coordinate.x === 0 || this.coordinate.y === 0) {
+                                if (this.coordinate.x === null || this.coordinate.y === null || this.coordinate.x === 0 || this.coordinate.y === 0) {
                                     return;
                                 }
-                                var r = Math.sqrt(thatNode.user.stars / 1000);
+                                var r = Math.sqrt(thatNode.user.stars / 800);
                                 if (r < 3) r = 3;
 
                                 var pieData = thatNode.getFieldScores();
@@ -140,7 +140,7 @@ var userVis = function () {
                             };
 
                             var addTooltip = function addTooltip(node) {
-                                var r = Math.sqrt(node.user.stars / 1000);
+                                var r = Math.sqrt(node.user.stars / 800);
                                 var keywordKeys = _.keys(node.user.related_keyword);
 
                                 var x = node.coordinate.x + r + 20;
@@ -210,10 +210,91 @@ var userVis = function () {
                             };
                         };
 
+                        drawKeywordLink = function drawKeywordLink(fromKeyword) {
+                            var eachKeywordCor = fromKeyword.eachKeywordCor;
+                            var from = fromKeyword.keywordName;
+                            _.forEach(eachKeywordCor, function (cor, to) {
+                                if (cor > 0) {
+                                    _.forEach(attractors, function (attractorA) {
+                                        _.forEach(attractors, function (attractorB) {
+                                            if (attractorA.name === from && attractorB.name === to && attractorA.theta < attractorB.theta) {
+                                                var thetaDiff = attractorB.theta - attractorA.theta;
+                                                var lineData = [];
+                                                if (Util.radians_to_degrees(thetaDiff) > 180) {
+                                                    lineData.push({ x: attractorB.x - 0.1, y: attractorB.y });
+                                                    lineData.push({ x: attractorB.x, y: attractorB.y });
+                                                    lineData.push({ x: attractorB.x + 0.1, y: attractorB.y });
+                                                    thetaDiff = 2 * PI - attractorB.theta + attractorA.theta;
+                                                    if (Util.radians_to_degrees(thetaDiff) < 10) {
+                                                        var theta = attractorB.theta + thetaDiff / 2;
+                                                        var mid_x = RADVIZ_CENTER_X + Math.cos(theta) * (RADVIZ_RADIUS + 200);
+                                                        var mid_y = RADVIZ_CENTER_Y + Math.sin(theta) * (RADVIZ_RADIUS + 200);
+                                                        lineData.push({ x: mid_x, y: mid_y });
+                                                    } else {
+                                                        var maxIter = Math.ceil(Util.radians_to_degrees(thetaDiff) / 15);
+                                                        for (var i = 1; i < maxIter; i++) {
+                                                            var _theta = attractorB.theta + thetaDiff * i / maxIter;
+                                                            _theta = _theta > 2 * PI ? _theta - 2 * PI : _theta;
+                                                            var addedR = 300;
+                                                            if (i < maxIter / 2) {
+                                                                addedR = 300 * i / maxIter;
+                                                            } else {
+                                                                addedR = 300 - 300 * i / maxIter;
+                                                            }
+                                                            var _mid_x = RADVIZ_CENTER_X + Math.cos(_theta) * (RADVIZ_RADIUS + addedR);
+                                                            var _mid_y = RADVIZ_CENTER_Y + Math.sin(_theta) * (RADVIZ_RADIUS + addedR);
+                                                            lineData.push({ x: _mid_x, y: _mid_y });
+                                                        }
+                                                    }
+
+                                                    lineData.push({ x: attractorA.x - 0.1, y: attractorA.y });
+                                                    lineData.push({ x: attractorA.x, y: attractorA.y });
+                                                    lineData.push({ x: attractorA.x + 0.1, y: attractorA.y });
+                                                } else {
+                                                    lineData.push({ x: attractorA.x - 0.1, y: attractorA.y });
+                                                    lineData.push({ x: attractorA.x, y: attractorA.y });
+                                                    lineData.push({ x: attractorA.x + 0.1, y: attractorA.y });
+                                                    if (Util.radians_to_degrees(thetaDiff) < 10) {
+                                                        var _theta2 = attractorA.theta + thetaDiff / 2;
+                                                        var _mid_x2 = RADVIZ_CENTER_X + Math.cos(_theta2) * (RADVIZ_RADIUS + 200);
+                                                        var _mid_y2 = RADVIZ_CENTER_Y + Math.sin(_theta2) * (RADVIZ_RADIUS + 200);
+                                                        lineData.push({ x: _mid_x2, y: _mid_y2 });
+                                                    } else {
+                                                        var _maxIter = Math.ceil(Util.radians_to_degrees(thetaDiff) / 15);
+                                                        for (var _i = 1; _i < _maxIter; _i++) {
+                                                            var _theta3 = attractorA.theta + thetaDiff * _i / _maxIter;
+                                                            var _addedR = 300;
+                                                            if (_i < _maxIter / 2) {
+                                                                _addedR = 300 * _i / _maxIter;
+                                                            } else {
+                                                                _addedR = 300 - 300 * _i / _maxIter;
+                                                            }
+                                                            var _mid_x3 = RADVIZ_CENTER_X + Math.cos(_theta3) * (RADVIZ_RADIUS + _addedR);
+                                                            var _mid_y3 = RADVIZ_CENTER_Y + Math.sin(_theta3) * (RADVIZ_RADIUS + _addedR);
+                                                            lineData.push({ x: _mid_x3, y: _mid_y3 });
+                                                        }
+                                                    }
+
+                                                    lineData.push({ x: attractorB.x - 0.1, y: attractorB.y });
+                                                    lineData.push({ x: attractorB.x, y: attractorB.y });
+                                                    lineData.push({ x: attractorB.x + 0.1, y: attractorB.y });
+                                                }
+                                                g.append("path").attr("d", lineBasis(lineData)).attrs({
+                                                    fill: 'none',
+                                                    stroke: '#D4626C',
+                                                    opacity: UNSELECTED_OPACITY / 2,
+                                                    'stroke-width': cor
+                                                });
+                                            }
+                                        });
+                                    });
+                                }
+                            });
+                        };
+
                         Attractor = function Attractor(name, theta) {
                             var _this = this;
 
-                            // theta = theta - 90;
                             this.name = name;
                             this.field = keyField[name];
                             this.x = RADVIZ_CENTER_X + Math.cos(theta) * RADVIZ_RADIUS;
@@ -231,7 +312,7 @@ var userVis = function () {
                             this.render = function () {
                                 var keyH = Data.FIELDS[thatKeyword.field].keywordCounts[thatKeyword.name] / 4;
                                 if (_.isNaN(keyH)) keyH = 0;
-
+                                // keyH = 0;
                                 var rectG = g.append('rect').attrs({
                                     x: 0,
                                     y: 0,
@@ -314,6 +395,16 @@ var userVis = function () {
                                 d3.selectAll('#pie' + dataPoint.user.id).classed('selected', selectedNodes.indexOf(dataPoint.user.id) >= 0);
                             });
 
+                            // 아무도 선택 안되었으면 모두 선택한 것과 같은 효과를 적용한다.
+                            d3.selectAll('.pie').classed('unselectedAll', selectedNodes.length === 0);
+                            if (selectedNodes.length === 0) {
+                                d3.select('#trendRenderer > *').remove();
+                                d3.select('#keywordRankingRenderer > *').remove();
+                                trendVis({ data: _.keys(Data.REPOSITORIES), conditionInfo: { descText: 'ALL PROJECT' } });
+                                keywordRankingVis({ projectsData: _.keys(Data.REPOSITORIES) });
+                                return;
+                            }
+
                             // 프로젝트 필터
                             var projects = [];
                             _.forEach(selectedNodes, function (selected) {
@@ -340,10 +431,10 @@ var userVis = function () {
                         root = d3.select('#userNetworkRenderer');
                         WIDTH = 1180;
                         HEIGHT = 1030;
-                        RADVIZ_RADIUS = 430;
+                        RADVIZ_RADIUS = 443;
                         RADVIZ_CENTER_X = WIDTH / 2;
                         RADVIZ_CENTER_Y = (HEIGHT - 20) / 2;
-                        g = root.append('g').attr("transform", "translate(55,40) scale(0.9)");
+                        g = root.append('g').attr("transform", "translate(55,40) scale(0.89)");
                         userData = param.users;
                         linkData = param.links;
                         keys = [];
@@ -386,7 +477,7 @@ var userVis = function () {
                         // radviz 외부 축
                         _.forEach(keys, function (key, i) {
                             var theta = 2 * PI * (i / keys.length); // 0 ~ 2*PI
-                            attractors.push(new Attractor(key, theta).render());
+                            attractors.push(new Attractor(key, theta));
                         });
 
                         // radviz 내부 노드 생성
@@ -427,66 +518,26 @@ var userVis = function () {
                         // });
 
                         // 태양신 그리기
-                        console.log(keywordCor);
                         _.forEach(keywordCor, function (eachKeywordCor, from) {
-                            _.forEach(eachKeywordCor, function (cor, to) {
-                                if (cor > 10 && from > to) {
-                                    _.forEach(attractors, function (attractorA) {
-                                        _.forEach(attractors, function (attractorB) {
-                                            if (attractorA.name === from && attractorB.name === to) {
-                                                var lineData = [];
-                                                lineData.push({ x: attractorA.x - 0.1, y: attractorA.y });
-                                                lineData.push({ x: attractorA.x, y: attractorA.y });
-                                                lineData.push({ x: attractorA.x + 0.1, y: attractorA.y });
-                                                var thetaDiff = attractorA.theta - attractorB.theta;
-                                                console.log(from, to);
-                                                console.log(attractorA);
-                                                console.log(attractorB);
-                                                console.log(Util.radians_to_degrees(thetaDiff));
-                                                // if (Util.radians_to_degrees(thetaDiff) < 30) {
-                                                //     let theta = attractorA.theta - (thetaDiff);
-                                                //     let mid_x = RADVIZ_CENTER_X + Math.cos(theta) * (RADVIZ_RADIUS + 200);
-                                                //     let mid_y = RADVIZ_CENTER_Y + Math.sin(theta) * (RADVIZ_RADIUS + 200);
-                                                //     lineData.push(({ x: mid_x, y: mid_y }));
-                                                // } else {
-                                                //     console.log(Util.radians_to_degrees(thetaDiff), Math.ceil(Util.radians_to_degrees(thetaDiff) / 15));
-                                                //     for (let i = 0; i < 100; i++) {
-                                                // let theta = attractorA.theta - (thetaDiff) * i / 100 / 2;
-                                                // let mid_x = RADVIZ_CENTER_X + Math.cos(theta) * (RADVIZ_RADIUS + 2 * (100 - Math.abs(i - 50)) );
-                                                // let mid_y = RADVIZ_CENTER_Y + Math.sin(theta) * (RADVIZ_RADIUS + 2 * (100 - Math.abs(i - 50)));
-                                                // lineData.push(({ x: mid_x, y: mid_y }));
-                                                // }
-                                                // }
-                                                lineData.push({ x: attractorB.x - 0.1, y: attractorB.y });
-                                                lineData.push({ x: attractorB.x, y: attractorB.y });
-                                                lineData.push({ x: attractorB.x + 0.1, y: attractorB.y });
-                                                // console.log(lineData);
-                                                g.append("path").attr("d", lineBasis(lineData)).attrs({
-                                                    fill: 'none',
-                                                    stroke: '#E179C1',
-                                                    opacity: 1,
-                                                    // opacity: UNSELECTED_OPACITY/2,
-                                                    'stroke-width': cor / 2
-                                                });
-                                            }
-                                        });
-                                    });
-                                }
-                            });
+                            drawKeywordLink({ eachKeywordCor: eachKeywordCor, keywordName: from });
+                        });
+
+                        // radviz 외부 축 그리기
+                        _.forEach(attractors, function (attractor, i) {
+                            attractor.render();
                         });
 
                         // radviz 내부 노드 그리기
-                        save = {};
-
+                        // let save = {};
                         _.forEach(dataPoints, function (dataPoint) {
                             dataPoint.render();
-                            var x = dataPoint.coordinateX();
-                            var y = dataPoint.coordinateY();
-                            var r = dataPoint.user.stars / 10000;
-
-                            save[dataPoint.user.id] = { id: dataPoint.user.id, x: x, y: y, r: r };
+                            // let x = dataPoint.coordinateX();
+                            // let y = dataPoint.coordinateY();
+                            // let r = Math.sqrt((dataPoint.user.stars) / 800);
+                            // save[dataPoint.user.id] = { id: dataPoint.user.id, x: x, y: y, r: r };
                         });
-                        //
+                        d3.selectAll('.pie').classed('unselectedAll', selectedNodes.length === 0);
+
                         // function download(filename, text) {
                         //     var element = document.createElement('a');
                         //     element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
@@ -500,10 +551,9 @@ var userVis = function () {
                         //     document.body.removeChild(element);
                         // }
                         //
-                        // download('circles2.json', JSON.stringify(save));
-                        //
+                        // download('circles3.json', JSON.stringify(save));
 
-                    case 32:
+                    case 33:
                     case 'end':
                         return _context.stop();
                 }
