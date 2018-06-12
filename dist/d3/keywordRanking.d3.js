@@ -2,7 +2,7 @@
 
 function keywordRankingVis(params) {
     var WIDTH = 667;
-    var HEIGHT = 400;
+    var HEIGHT = 300;
     var PADDING_LEFT = 80;
     var PADDING_RIGHT = 40;
     var PADDING_TOP = 20;
@@ -132,7 +132,6 @@ function keywordRankingVis(params) {
                         x: getCoord({ x: time, y: MAX_RANKING - ranking + 1 }).x,
                         y: getCoord({ x: time, y: MAX_RANKING - ranking + 1 }).y,
                         color: FIELD_COLORS[Data.FIELD_OF_KEY[keyword]]
-                        // color: COLOR_RANKING[allKeywordList.indexOf(keyword) % 20]
                     });
                 } else {
                     if (lineData.length > 3) {
@@ -187,7 +186,6 @@ function keywordRankingVis(params) {
             if (Data.REPOSITORIES[project].keywords.indexOf(keyword) >= 0) selectedProject.push(project);
         });
         selectedProject = _.uniq(selectedProject);
-        console.log(selectedProject);
         projectsVis({ projects: selectedProject });
     }
 

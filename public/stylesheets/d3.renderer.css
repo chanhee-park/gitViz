@@ -13,11 +13,11 @@ svg#trendRenderer {
 
 svg#keywordRankingRenderer {
   width: 667px;
-  height: 400px; }
+  height: 300px; }
 
 .project-list.block {
   width: 667px;
-  height: 300px;
+  height: 400px;
   padding: 30px;
   overflow-y: scroll; }
   .project-list.block .project {

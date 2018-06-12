@@ -69,9 +69,9 @@
     .vis-comp-block-list .sub-view .trend-view {
       height: 30%; }
     .vis-comp-block-list .sub-view .keyword-view {
-      height: 40%; }
-    .vis-comp-block-list .sub-view .project-list-view {
       height: 30%; }
+    .vis-comp-block-list .sub-view .project-list-view {
+      height: 40%; }
 
 .button-wrapper {
   width: 50px;
