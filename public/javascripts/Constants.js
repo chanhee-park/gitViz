@@ -22,4 +22,4 @@ const FIELD_COLORS = {
     'OS': '#bb85a5',
     'graphics': '#29BECE',
 };
-const UNSELECTED_OPACITY = 0.5;
+const UNSELECTED_OPACITY = 0.3;

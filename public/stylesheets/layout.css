@@ -12,6 +12,15 @@
     height: 100%;
     position: relative;
     flex: 7; }
+    .vis-comp-block-list .main-view .check-box-list {
+      display: block;
+      position: absolute;
+      bottom: 50px;
+      left: 50px; }
+      .vis-comp-block-list .main-view .check-box-list .check-box {
+        font-size: 14px;
+        line-height: 42px;
+        color: #586069; }
     .vis-comp-block-list .main-view .category-select-zone-open-button-wrapper {
       position: absolute;
       top: 20px;

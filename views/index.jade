@@ -17,24 +17,35 @@ block content
                 .block-wrapper
                     .vis-comp-block.block
                         svg#userNetworkRenderer
+            .check-box-list
+                .check-box
+                    input#keywordLink(type='checkbox')
+                    label(for='keywordLink') Show keyword links.
+                .check-box
+                    input#userLink(type='checkbox')
+                    label(for='userLink') Show user links.
+                .check-box
+                    input#userNode(type='checkbox')
+                    label(for='userNode') Show only users with links.
+
         .sub-view
-            .trend-view
-                .block-wrapper
-                    .vis-comp-block.block
-                        svg#trendRenderer
-            .keyword-view
-                .block-wrapper
-                    .vis-comp-block.block
-                        svg#keywordRankingRenderer
-            .project-list-view
-                .block-wrapper
-                    .project-list.block#project-list
+                .trend-view
+                    .block-wrapper
+                        .vis-comp-block.block
+                            svg#trendRenderer
+                .keyword-view
+                    .block-wrapper
+                        .vis-comp-block.block
+                            svg#keywordRankingRenderer
+                .project-list-view
+                    .block-wrapper
+                        .project-list.block#project-list
 
     script(src="/data.js")
     script(src="/util.js")
     script(src="/Constants.js")
     script(src="/d3/util.d3.js")
-    //script(src="/options.js")
+    script(src="/options.js")
     script(src="/d3/userNetwork.d3.js")
     script(src="/d3/trend.d3.js")
     script(src="/d3/keywordRanking.d3.js")

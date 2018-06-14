@@ -22,9 +22,12 @@ const Data = new function () {
             });
         });
 
-        userVis({ users: that.USERS, links: that.LINKS, fields: that.FIELDS });
+        userVis(
+            { users: that.USERS, links: that.LINKS, fields: that.FIELDS },
+            { keywordLink: true, userLink: false, userNode: false, });
         trendVis({ data: _.keys(that.REPOSITORIES), conditionInfo: { descText: 'ALL PROJECT' } });
-        keywordRankingVis({projectsData: _.keys(that.REPOSITORIES) });
+        keywordRankingVis({ projectsData: _.keys(that.REPOSITORIES) });
+        projectsVis({ projects: _.keys(that.REPOSITORIES) })
     };
 
 };

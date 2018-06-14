@@ -24,4 +24,4 @@ var FIELD_COLORS = {
     'OS': '#bb85a5',
     'graphics': '#29BECE'
 };
-var UNSELECTED_OPACITY = 0.5;
+var UNSELECTED_OPACITY = 0.3;

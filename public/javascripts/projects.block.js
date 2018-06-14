@@ -1,10 +1,8 @@
 function projectsVis(param) {
     let projectIds = param.projects;
-    console.log(projectIds);
 
     let $projectList = $('#project-list');
     $projectList.empty();
-    console.log($projectList.html)
     let projects = [];
     _.forEach(projectIds, function (projectId) {
         projects.push(Data.REPOSITORIES[projectId]);
